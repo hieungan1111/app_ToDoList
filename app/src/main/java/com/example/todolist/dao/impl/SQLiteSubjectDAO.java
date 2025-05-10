@@ -1,0 +1,106 @@
+package com.example.todolist.dao.impl;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.example.todolist.dao.SubjectDAO;
+import com.example.todolist.database.DatabaseHelper;
+import com.example.todolist.model.Subject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+public class SQLiteSubjectDAO implements SubjectDAO {
+
+    private final SQLiteDatabase db;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public SQLiteSubjectDAO(Context context) {
+        DatabaseHelper helper = new DatabaseHelper(context);
+        db = helper.getWritableDatabase();
+    }
+
+    @Override
+    public void addSubject(Subject subject) {
+        ContentValues values = new ContentValues();
+        values.put("rangeStart", dateFormat.format(subject.getRangeStart()));
+        values.put("rangeEnd", dateFormat.format(subject.getRangeEnd()));
+        values.put("timeStart", dateFormat.format(subject.getTimeStart()));
+        values.put("timeEnd", dateFormat.format(subject.getTimeEnd()));
+        values.put("subject", subject.getSubjectName());
+        values.put("subjectColor", subject.getSubjectColor());
+        values.put("weekdays", String.join(",", subject.getWeekDays()));
+        values.put("userId", subject.getUserId());
+        db.insert("Subject", null, values);
+    }
+
+    @Override
+    public Subject getSubjectById(int id) {
+        Cursor cursor = db.query("Subject", null, "id = ?", new String[]{String.valueOf(id)}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Subject subject = extractSubjectFromCursor(cursor);
+            cursor.close();
+            return subject;
+        }
+        cursor.close();
+        return null;
+    }
+
+    @Override
+    public List<Subject> getAllSubjectsByUserId(int userId) {
+        List<Subject> list = new ArrayList<>();
+        Cursor cursor = db.query("Subject", null, "userId = ?", new String[]{String.valueOf(userId)}, null, null, "rangeStart ASC");
+        while (cursor.moveToNext()) {
+            list.add(extractSubjectFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
+    @Override
+    public void updateSubject(Subject subject) {
+        ContentValues values = new ContentValues();
+        values.put("rangeStart", dateFormat.format(subject.getRangeStart()));
+        values.put("rangeEnd", dateFormat.format(subject.getRangeEnd()));
+        values.put("timeStart", dateFormat.format(subject.getTimeStart()));
+        values.put("timeEnd", dateFormat.format(subject.getTimeEnd()));
+        values.put("subject", subject.getSubjectName());
+        values.put("subjectColor", subject.getSubjectColor());
+        values.put("weekdays", String.join(",", subject.getWeekDays()));
+        values.put("userId", subject.getUserId());
+        db.update("Subject", values, "id = ?", new String[]{String.valueOf(subject.getId())});
+    }
+
+    @Override
+    public void deleteSubject(int id) {
+        db.delete("Subject", "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    private Subject extractSubjectFromCursor(Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+        Date rangeStart = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("rangeStart")));
+        Date rangeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("rangeEnd")));
+        Date timeStart = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeStart")));
+        Date timeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
+        String subjectName = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
+        String subjectColor = cursor.getString(cursor.getColumnIndexOrThrow("subjectColor"));
+        String weekdaysStr = cursor.getString(cursor.getColumnIndexOrThrow("weekdays"));
+        List<String> weekDays = Arrays.asList(weekdaysStr.split(","));
+        int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
+
+        return new Subject(id, rangeStart, rangeEnd, timeStart, timeEnd, subjectName, subjectColor, weekDays, userId);
+    }
+
+    private Date parseDate(String str) {
+        try {
+            return dateFormat.parse(str);
+        } catch (Exception e) {
+            return new Date(); // fallback
+        }
+    }
+}

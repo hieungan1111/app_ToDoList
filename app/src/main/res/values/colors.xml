@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+
+    <!-- Primary & Background -->
+    <color name="primary">#FF458AE5</color>
+    <color name="primary_color1">#FF92A3FD</color>
+    <color name="primary_color2">#FF9DCEFF</color>
+
+    <color name="light_background">#FFF2F2F2</color>
+    <color name="dark_background">#FF0D0C0C</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary_color1">#FFC58BF2</color>
+    <color name="secondary_color2">#FFEEA4CE</color>
+
+    <!-- Greys & Text -->
+    <color name="grey">#FFBEBEBE</color>
+    <color name="dark_grey">#FF343434</color>
+    <color name="black">#FF1D1617</color>
+    <color name="gray">#FF786F72</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_gray">#FFF7F8F8</color>
+
+    <!-- Gradients (không thể định nghĩa trực tiếp trong colors.xml) -->
+    <!-- Dùng trong drawable xml hoặc qua code nếu cần -->
+
 </resources>
