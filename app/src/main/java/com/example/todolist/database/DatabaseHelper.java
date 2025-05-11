@@ -24,6 +24,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "fcmToken TEXT, " +
                 "birthday TEXT, " +
                 "gender TEXT, " +
+                "is_verified INTEGER, " +
+                "password TEXT, " +
                 "avatarUrl TEXT)";
 
         String createTaskTable = "CREATE TABLE Task (" +
@@ -35,12 +37,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "userId INTEGER, " +
                 "taskPriority TEXT, " +
                 "isHidden INTEGER, " +
-                "FOREIGN KEY(userId) REFERENCES User(uid))";
+                "FOREIGN KEY(userId) REFERENCES User(id))";
 
         String createCategories = "CREATE TABLE Categories (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT, " +
-                "FOREIGN KEY(userId) REFERENCES User(uid))";
+                "userId INTEGER, " +
+                "FOREIGN KEY(userId) REFERENCES User(id))";
 
         String createNoteTable = "CREATE TABLE Note (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -65,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "isEnable INTEGER, " +
                 "createAt TEXT, " +
                 "userId TEXT, " +
-                "FOREIGN KEY(userId) REFERENCES User(uid))";
+                "FOREIGN KEY(userId) REFERENCES User(id))";
         String createSubjectTable = "CREATE TABLE Subject (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "rangeStart TEXT, " +
