@@ -31,10 +31,116 @@ public class SQLiteUserDAO implements UserDAO {
         values.put("email", user.getEmail());
         values.put("createAt", dateFormat.format(user.getCreateAt()));
         values.put("fcmToken", user.getFcmToken());
-        values.put("birthday", user.getBirthday());
-        values.put("gender", user.getGender());
-        values.put("avatarUrl", user.getAvatarUrl());
+        values.put("is_verified", user.getIs_verified());
+        values.put("password", user.getPassword());
         db.insert("User", null, values);
+    }
+
+    @Override
+    public User findUser(String email) {
+        Cursor cursor = null;
+        User user = null;
+
+        try {
+            // Sử dụng db.query() để truy vấn cơ sở dữ liệu với điều kiện email và code
+            cursor = db.query(
+                    "User",
+                    null,
+                    "email = ? and is_verified=?",
+                    new String[]{email,"1"},
+                    null,
+                    null,
+                    null
+            );
+
+            // Kiểm tra nếu cursor có dữ liệu
+            if (cursor != null && cursor.moveToFirst()) {
+                user = extractUserFromCursor(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return user;
+    }
+
+    @Override
+    public User findCode(String code) {
+        Cursor cursor = null;
+        User user = null;
+
+        try {
+            // Sử dụng db.query() để truy vấn cơ sở dữ liệu với điều kiện email và code
+            cursor = db.query(
+                    "User",
+                    null,
+                    "fcmToken = ?",
+                    new String[]{code},
+                    null,
+                    null,
+                    null
+            );
+
+            // Kiểm tra nếu cursor có dữ liệu
+            if (cursor != null && cursor.moveToFirst()) {
+                user = extractUserFromCursor(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return user;
+    }
+
+    @Override
+    public User checkVerify(String email, String code) {
+        Cursor cursor = null;
+        User user = null;
+
+        try {
+            // Sử dụng db.query() để truy vấn cơ sở dữ liệu với điều kiện email và code
+            cursor = db.query(
+                    "User",
+                    null,
+                    "email=? and fcmToken = ? and is_verified=?",
+                    new String[]{email, code, "0"},
+                    null,
+                    null,
+                    null
+            );
+
+            // Kiểm tra nếu cursor có dữ liệu
+            if (cursor != null && cursor.moveToFirst()) {
+                user = extractUserFromCursor(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public void updateIsVerified(int id) {
+        ContentValues values = new ContentValues();
+        values.put("is_verified",1);
+        db.update("User", values, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    @Override
+    public void deleteUserByEmail(String email) {
+        db.delete("User", "email = ?", new String[]{String.valueOf(email)});
     }
 
     @Override
@@ -86,9 +192,11 @@ public class SQLiteUserDAO implements UserDAO {
         String fcmToken = cursor.getString(cursor.getColumnIndexOrThrow("fcmToken"));
         String birthday = cursor.getString(cursor.getColumnIndexOrThrow("birthday"));
         String gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
+        int is_verified = cursor.getInt(cursor.getColumnIndexOrThrow("is_verified"));
+        String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
         String avatarUrl = cursor.getString(cursor.getColumnIndexOrThrow("avatarUrl"));
 
-        return new User(id, fullname, email, createAt, fcmToken, birthday, gender, avatarUrl);
+        return new User(id, fullname, email, createAt, fcmToken, birthday, gender, avatarUrl, password,is_verified);
     }
 
     private Date parseDate(String str) {

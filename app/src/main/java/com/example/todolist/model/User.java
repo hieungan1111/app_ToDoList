@@ -1,5 +1,6 @@
 package com.example.todolist.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class User {
@@ -11,8 +12,10 @@ public class User {
     public String birthday;
     public String gender;
     public String avatarUrl;
+    public int is_verified;
+    public String password;
 
-    public User(int id, String fullname, String email, Date createAt, String fcmToken, String birthday, String gender, String avatarUrl) {
+    public User(int id, String fullname, String email, Date createAt, String fcmToken, String birthday, String gender, String avatarUrl, String password, int is_verified) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -21,6 +24,19 @@ public class User {
         this.birthday = birthday;
         this.gender = gender;
         this.avatarUrl = avatarUrl;
+        this.is_verified=is_verified;
+        this.password=password;
+    }
+
+    public User(String fullname, String email, String fcmToken, int is_verified, String password) {
+        this.fullname = fullname;
+        this.email = email;
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+        this.createAt=currentDate;
+        this.fcmToken = fcmToken;
+        this.is_verified = is_verified;
+        this.password = password;
     }
 
     public int getId() {
@@ -85,5 +101,37 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public int getIs_verified() {
+        return is_verified;
+    }
+
+    public void setIs_verified(int is_verified) {
+        this.is_verified = is_verified;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", fullname='" + fullname + '\'' +
+                ", email='" + email + '\'' +
+                ", createAt=" + createAt +
+                ", fcmToken='" + fcmToken + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", gender='" + gender + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", is_verified=" + is_verified +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
