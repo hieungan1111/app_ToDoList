@@ -27,7 +27,7 @@
             android:exported="false" />
         <activity
             android:name=".ShowTaskActivity"
-          android:exported="false" />
+            android:exported="false" />
         <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
@@ -66,10 +66,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddTaskActivity" 
-            android:exported="false"/>
+        <activity
+            android:name=".AddTaskActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DemActivity"
             android:exported="false" />
     </application>
 
