@@ -1,6 +1,7 @@
 package com.example.todolist.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.example.todolist.R;
 import com.example.todolist.model.Task;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,12 +100,22 @@ public class TaskListAdapter extends BaseAdapter {
         if (task.isDone()) {
             holder.tvTaskContent.setPaintFlags(holder.tvTaskContent.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.tvTaskStatus.setVisibility(View.VISIBLE);
+            holder.tvTaskStatus.setText(R.string.completed); // "Đã hoàn thành"
+            holder.tvTaskStatus.setBackgroundColor(Color.parseColor("#E6F4EA"));
+            holder.tvTaskStatus.setTextColor(Color.parseColor("#34A853"));
+        } else if (task.getTimeStart().before(new Date())) {
+            holder.tvTaskContent.setPaintFlags(holder.tvTaskContent.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.tvTaskStatus.setVisibility(View.VISIBLE);
+            holder.tvTaskStatus.setText("Quá hạn");
+            holder.tvTaskStatus.setBackgroundColor(Color.parseColor("#FEEAEA"));
+            holder.tvTaskStatus.setTextColor(Color.parseColor("#EA4335"));
         } else {
             holder.tvTaskContent.setPaintFlags(holder.tvTaskContent.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             holder.tvTaskStatus.setVisibility(View.GONE);
         }
 
         holder.btnDeleteTask.setOnClickListener(v -> listener.onTaskDeleted(task));
+        // Ẩn mặc định
 
         return convertView;
     }

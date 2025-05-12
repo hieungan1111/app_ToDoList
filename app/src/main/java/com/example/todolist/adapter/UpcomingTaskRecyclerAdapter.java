@@ -40,6 +40,10 @@ public class UpcomingTaskRecyclerAdapter extends RecyclerView.Adapter<UpcomingTa
 
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy - hh:mm a", Locale.getDefault());
         holder.tvTime.setText(sdf.format(task.getDay()));
+
+        holder.itemView.setOnClickListener(v -> {
+            context.startActivity(new android.content.Intent(context, com.example.todolist.RemindersActivity.class));
+        });
     }
 
     @Override
