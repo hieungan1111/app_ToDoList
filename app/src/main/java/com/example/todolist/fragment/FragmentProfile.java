@@ -25,6 +25,7 @@ import com.example.todolist.ChangePasswordActivity;
 import com.example.todolist.EditProfileActivity;
 import com.example.todolist.LoginActivity;
 import com.example.todolist.R;
+import com.example.todolist.WelcomeActivity;
 import com.example.todolist.dao.impl.SQLiteUserDAO;
 import com.example.todolist.model.User;
 
@@ -98,7 +99,7 @@ public class FragmentProfile extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove("userId");
                 editor.apply();
-                Intent intent = new Intent(requireContext(), LoginActivity.class);
+                Intent intent = new Intent(requireContext(), WelcomeActivity.class);
                 startActivity(intent);
             }
         });
