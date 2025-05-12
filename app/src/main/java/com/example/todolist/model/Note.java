@@ -16,6 +16,9 @@ public class Note {
     public int userId;
     public String categoryId;
 
+    public Note() {
+    }
+
     public Note(int id, String title, String content, String category, Date createAt, Date updateAt, String themeColor, String fontColor, int fontSize, boolean isHidden, int userId, String categoryId) {
         this.id = id;
         this.title = title;
