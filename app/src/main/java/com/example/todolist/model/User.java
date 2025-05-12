@@ -15,6 +15,9 @@ public class User {
     public int is_verified;
     public String password;
 
+    public User() {
+    }
+
     public User(int id, String fullname, String email, Date createAt, String fcmToken, String birthday, String gender, String avatarUrl, String password, int is_verified) {
         this.id = id;
         this.fullname = fullname;

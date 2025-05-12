@@ -139,6 +139,14 @@ public class SQLiteUserDAO implements UserDAO {
     }
 
     @Override
+    public boolean updatePassword(int id,String password) {
+        ContentValues values = new ContentValues();
+        values.put("password",password);
+        int rowsAffected = db.update("User", values, "id = ?", new String[]{String.valueOf(id)});
+        return rowsAffected > 0;
+    }
+
+    @Override
     public void deleteUserByEmail(String email) {
         db.delete("User", "email = ?", new String[]{String.valueOf(email)});
     }
@@ -167,17 +175,18 @@ public class SQLiteUserDAO implements UserDAO {
     }
 
     @Override
-    public void updateUser(User user) {
+    public boolean updateUser(User user) {
         ContentValues values = new ContentValues();
         values.put("fullname", user.getFullname());
-        values.put("email", user.getEmail());
-        values.put("createAt", dateFormat.format(user.getCreateAt()));
-        values.put("fcmToken", user.getFcmToken());
         values.put("birthday", user.getBirthday());
         values.put("gender", user.getGender());
         values.put("avatarUrl", user.getAvatarUrl());
-        db.update("User", values, "id = ?", new String[]{String.valueOf(user.getId())});
+
+        int rowsAffected = db.update("User", values, "id = ?", new String[]{String.valueOf(user.getId())});
+
+        return rowsAffected > 0;
     }
+
 
     @Override
     public void deleteUser(int id) {

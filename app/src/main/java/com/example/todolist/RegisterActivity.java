@@ -131,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (confirmPassword.isEmpty()) {
             confirmPasswordEditText.setError("Vui lòng xác nhận mật khẩu");
             return false;
-        }  else if (!confirmPassword.equals(password)) {
+        }  else if (!confirmPassword.equals(p1)) {
             confirmPasswordEditText.setError("Không được phép có khoảng trống đầu/cuối ở mật khẩu");
             return false;
         }else if (!confirmPassword.equals(password)) {
