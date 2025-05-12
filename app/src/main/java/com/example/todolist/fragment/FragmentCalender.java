@@ -24,9 +24,12 @@ public class FragmentCalender extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Khởi tạo CustomBottomSheet
-        final CustomBottomSheet bottomSheet = new CustomBottomSheet(getActivity());
+        if (getActivity() != null && getContext() != null) {
 
-        bottomSheet.showBottomSheet("This is a custom Bottom Sheet message.");
+            final CustomBottomSheet bottomSheet = new CustomBottomSheet(getActivity(), getContext());
+
+            bottomSheet.showBottomSheet("This is a custom Bottom Sheet message.");
+        }
 
     }
 }

@@ -87,8 +87,8 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
 
     private Deadline extractDeadlineFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-        Date day = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("day")));
-        Date timeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
+        String day = (cursor.getString(cursor.getColumnIndexOrThrow("day")));
+        String timeEnd = (cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
         String subject = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
         String idSubject = cursor.getString(cursor.getColumnIndexOrThrow("subjectId"));
         String deadlineName = cursor.getString(cursor.getColumnIndexOrThrow("deadlineName"));
@@ -98,11 +98,5 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         return new Deadline(id, day, timeEnd, subject, idSubject, deadlineName, isDone, userId);
     }
 
-    private Date parseDate(String str) {
-        try {
-            return dateFormat.parse(str);
-        } catch (Exception e) {
-            return new Date();
-        }
-    }
+
 }

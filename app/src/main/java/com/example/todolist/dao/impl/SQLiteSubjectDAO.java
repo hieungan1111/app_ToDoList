@@ -25,6 +25,7 @@ public class SQLiteSubjectDAO implements SubjectDAO {
         db = helper.getWritableDatabase();
     }
 
+
     @Override
     public void addSubject(Subject subject) {
         ContentValues values = new ContentValues();
@@ -83,10 +84,10 @@ public class SQLiteSubjectDAO implements SubjectDAO {
 
     private Subject extractSubjectFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-        Date rangeStart = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("rangeStart")));
-        Date rangeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("rangeEnd")));
-        Date timeStart = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeStart")));
-        Date timeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
+        String rangeStart = (cursor.getString(cursor.getColumnIndexOrThrow("rangeStart")));
+        String rangeEnd = (cursor.getString(cursor.getColumnIndexOrThrow("rangeEnd")));
+        String timeStart = (cursor.getString(cursor.getColumnIndexOrThrow("timeStart")));
+        String timeEnd = (cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
         String subjectName = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
         String subjectColor = cursor.getString(cursor.getColumnIndexOrThrow("subjectColor"));
         String weekdaysStr = cursor.getString(cursor.getColumnIndexOrThrow("weekdays"));
@@ -96,11 +97,5 @@ public class SQLiteSubjectDAO implements SubjectDAO {
         return new Subject(id, rangeStart, rangeEnd, timeStart, timeEnd, subjectName, subjectColor, weekDays, userId);
     }
 
-    private Date parseDate(String str) {
-        try {
-            return dateFormat.parse(str);
-        } catch (Exception e) {
-            return new Date(); // fallback
-        }
-    }
+
 }
