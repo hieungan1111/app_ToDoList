@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Nền (progress background - màu xám) -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="#E0E0E0"/>
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+
+    <!-- Tiến độ thực tế (màu tím) -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#8A56F0"/> <!-- Màu tím của bạn -->
+                <corners android:radius="8dp"/>
+            </shape>
+        </clip>
+    </item>
+</layer-list>

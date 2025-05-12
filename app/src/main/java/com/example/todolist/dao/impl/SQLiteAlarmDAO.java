@@ -36,7 +36,6 @@ public class SQLiteAlarmDAO implements AlarmDAO {
         values.put("userId", alarm.getUserId());
         db.insert("Alarm", null, values);
     }
-
     @Override
     public Alarm getAlarmById(int id) {
         Cursor cursor = db.query("Alarm", null, "id = ?", new String[]{String.valueOf(id)}, null, null, null);

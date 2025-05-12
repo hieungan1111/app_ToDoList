@@ -10,4 +10,5 @@ public interface TaskDAO {
     void updateTask(Task task);
     void deleteTask(int id);
     void markTaskDone(int id, boolean done);
+
 }

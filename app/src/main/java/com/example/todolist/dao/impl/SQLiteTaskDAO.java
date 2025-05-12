@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.todolist.dao.TaskDAO;
 import com.example.todolist.database.DatabaseHelper;
@@ -17,11 +18,12 @@ import java.util.List;
 public class SQLiteTaskDAO implements TaskDAO {
 
     private final SQLiteDatabase db;
+    private final DatabaseHelper dbHelper;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public SQLiteTaskDAO(Context context) {
-        DatabaseHelper helper = new DatabaseHelper(context);
-        db = helper.getWritableDatabase();
+        dbHelper = new DatabaseHelper(context);
+        db = dbHelper.getWritableDatabase();
     }
 
     @Override
@@ -34,6 +36,7 @@ public class SQLiteTaskDAO implements TaskDAO {
         values.put("userId", task.getUserId());
         values.put("taskPriority", task.getTaskPriority().name());
         values.put("isHidden", task.isHidden() ? 1 : 0);
+        values.put("type", task.getType());  // 👈 thêm dòng này
         db.insert("Task", null, values);
     }
 
@@ -51,14 +54,32 @@ public class SQLiteTaskDAO implements TaskDAO {
 
     @Override
     public List<Task> getAllTasksByUserId(int userId) {
-        List<Task> list = new ArrayList<>();
-        Cursor cursor = db.query("Task", null, "userId = ?", new String[]{String.valueOf(userId)}, null, null, "day ASC, timeStart ASC");
-        while (cursor.moveToNext()) {
-            list.add(extractTaskFromCursor(cursor));
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT * FROM Task WHERE userId = ?";
+        Log.d("DEBUG", "Executing SQL: " + query + " [userId=" + userId + "]");
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                task.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                task.setDay(parseDate(cursor.getString(cursor.getColumnIndexOrThrow("day"))));
+                task.setTimeStart(parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeStart"))));
+                task.setContent(cursor.getString(cursor.getColumnIndexOrThrow("content")));
+                task.setDone(cursor.getInt(cursor.getColumnIndexOrThrow("isDone")) == 1);
+                task.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow("userId")));
+                task.setTaskPriority(Task.TaskPriority.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("taskPriority"))));
+                task.setHidden(cursor.getInt(cursor.getColumnIndexOrThrow("isHidden")) == 1);
+                task.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                taskList.add(task);
+            } while (cursor.moveToNext());
         }
+
         cursor.close();
-        return list;
+        return taskList;
     }
+
 
     @Override
     public void updateTask(Task task) {
@@ -70,8 +91,10 @@ public class SQLiteTaskDAO implements TaskDAO {
         values.put("userId", task.getUserId());
         values.put("taskPriority", task.getTaskPriority().name());
         values.put("isHidden", task.isHidden() ? 1 : 0);
+        values.put("type", task.getType());  // 👈 thêm dòng này
         db.update("Task", values, "id = ?", new String[]{String.valueOf(task.getId())});
     }
+
 
     @Override
     public void deleteTask(int id) {
@@ -92,11 +115,11 @@ public class SQLiteTaskDAO implements TaskDAO {
         String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
         boolean isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone")) == 1;
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
-        String priorityStr = cursor.getString(cursor.getColumnIndexOrThrow("taskPriority"));
-        Task.TaskPriority taskPriority = Task.TaskPriority.valueOf(priorityStr);
+        Task.TaskPriority taskPriority = Task.TaskPriority.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("taskPriority")));
         boolean isHidden = cursor.getInt(cursor.getColumnIndexOrThrow("isHidden")) == 1;
+        String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));  // 👈 thêm dòng này
 
-        return new Task(id, day, timeStart, content, isDone, userId, taskPriority, isHidden);
+        return new Task(id, day, timeStart, content, isDone, userId, taskPriority, isHidden, type);  // 👈 truyền type
     }
 
     private Date parseDate(String str) {
@@ -105,5 +128,21 @@ public class SQLiteTaskDAO implements TaskDAO {
         } catch (Exception e) {
             return new Date();
         }
+    }
+    public List<Task> getTasksByUserIdAndType(int userId, String type) {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT * FROM Task WHERE userId = ? AND type = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), type});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = extractTaskFromCursor(cursor);
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return taskList;
     }
 }

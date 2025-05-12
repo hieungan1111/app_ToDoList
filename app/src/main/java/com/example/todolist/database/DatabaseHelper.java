@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ToDoList.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "userId INTEGER, " +
                 "taskPriority TEXT, " +
                 "isHidden INTEGER, " +
+                "type TEXT, " +
                 "FOREIGN KEY(userId) REFERENCES User(id))";
 
         String createCategories = "CREATE TABLE Categories (" +

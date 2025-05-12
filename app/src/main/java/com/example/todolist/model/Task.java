@@ -11,12 +11,24 @@ public class Task {
     public int userId;
     public TaskPriority taskPriority;
     public boolean isHidden;
+    private String type;
 
+    public Task() {
+
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
     public enum TaskPriority {
         LOW, MEDIUM, HIGH
     }
 
-    public Task(int id, Date day, Date timeStart, String content, boolean isDone, int userId, TaskPriority taskPriority, boolean isHidden) {
+    public Task(int id, Date day, Date timeStart, String content, boolean isDone, int userId, TaskPriority taskPriority, boolean isHidden,String type) {
         this.id = id;
         this.day = day;
         this.timeStart = timeStart;
@@ -25,6 +37,7 @@ public class Task {
         this.userId = userId;
         this.taskPriority = taskPriority;
         this.isHidden = isHidden;
+        this.type = type;
     }
 
     public int getId() {
@@ -37,6 +50,7 @@ public class Task {
 
     public Date getDay() {
         return day;
+
     }
 
     public void setDay(Date day) {
