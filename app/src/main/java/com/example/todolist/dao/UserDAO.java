@@ -9,9 +9,10 @@ public interface UserDAO {
     User findCode(String code); //kiểm tra code có trùng không
     User checkVerify(String email, String code);
     void updateIsVerified(int id);
+    boolean updatePassword(int id,String password);
     void deleteUserByEmail(String email);
     User getUserById(int id);
     List<User> getAllUsers();
-    void updateUser(User user);
+    boolean updateUser(User user);
     void deleteUser(int id);
 }
