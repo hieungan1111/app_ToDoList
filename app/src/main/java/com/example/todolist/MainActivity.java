@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             String tag = null;
 
             int id = item.getItemId();
-
+            //ashlfdkj.lk/
             if (id == R.id.home) {
                 selectedFragment = new FragmentHome();
                 tag = "HOME";
