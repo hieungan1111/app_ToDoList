@@ -224,17 +224,18 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/overTime"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:background="@drawable/custom1"
                                 android:padding="10dp"
                                 android:tint="#F6F3F3"
-                                app:srcCompat="@drawable/add_task" />
+                                app:srcCompat="@drawable/timer_off" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Thêm mới"
+                                android:text="Quá hạn"
                                 android:textColor="@color/white" />
                         </LinearLayout>
 
@@ -247,17 +248,18 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/alert"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:background="@drawable/custom1"
                                 android:padding="10dp"
                                 android:tint="#F6F3F3"
-                                app:srcCompat="@drawable/add_task" />
+                                app:srcCompat="@drawable/brightness" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Thêm mới"
+                                android:text="Nhắc nhở"
                                 android:textColor="@color/white" />
                         </LinearLayout>
 
@@ -438,6 +440,7 @@
 
                 <!-- Card 1 -->
                 <LinearLayout
+                    android:id="@+id/personal_activity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -471,6 +474,7 @@
 
                 <!-- Card 2 -->
                 <LinearLayout
+                    android:id="@+id/extracurricular_activity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.ExtracurricularTaskActivity;
+import com.example.todolist.OverdueTasksActivity;
+import com.example.todolist.PersonalTaskActivity;
 import com.example.todolist.R;
+import com.example.todolist.RemindersActivity;
 import com.example.todolist.ShowTaskActivity;
 import com.example.todolist.adapter.UpcomingTaskRecyclerAdapter;
 import com.example.todolist.dao.impl.SQLiteTaskDAO;
@@ -49,7 +52,16 @@ public class FragmentTask extends Fragment {
         refreshAllViews(view);
 
         ImageView showTask = view.findViewById(R.id.showTask);
+        ImageView alert = view.findViewById(R.id.alert);
+        ImageView overTime = view.findViewById(R.id.overTime);
+        LinearLayout personal_activity = view.findViewById(R.id.personal_activity);
+        LinearLayout extracurricular_activity = view.findViewById(R.id.extracurricular_activity);
+
         showTask.setOnClickListener(v -> startActivity(new Intent(requireContext(), ShowTaskActivity.class)));
+        alert.setOnClickListener(v -> startActivity(new Intent(requireContext(), RemindersActivity.class)));
+        overTime.setOnClickListener(v -> startActivity(new Intent(requireContext(), OverdueTasksActivity.class)));
+        personal_activity.setOnClickListener(v -> startActivity(new Intent(requireContext(), PersonalTaskActivity.class)));
+        extracurricular_activity.setOnClickListener(v -> startActivity(new Intent(requireContext(), ExtracurricularTaskActivity.class)));
     }
 
     @Override
@@ -141,7 +153,7 @@ public class FragmentTask extends Fragment {
                 upcomingTasks.add(task);
             }
         }
-
+        upcomingTasks.sort((t1, t2) -> t1.getDay().compareTo(t2.getDay()));
         if (upcomingTasks.isEmpty()) {
             emptyLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
