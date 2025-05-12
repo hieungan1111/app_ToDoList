@@ -23,6 +23,9 @@
     <color name="colorPrimary">#A4C2F4</color>
     <color name="colorPrimaryDark">#8AB4F8</color>
     <color name="colorAccent">#4285F4</color>
+    <color name="blue">#4B89FF</color>
+    <color name="purple">#D67BFF</color>
+    <color name="dark_gray">#444444</color>
 
     <!-- Gradients (không thể định nghĩa trực tiếp trong colors.xml) -->
     <!-- Dùng trong drawable xml hoặc qua code nếu cần -->

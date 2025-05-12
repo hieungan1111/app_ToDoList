@@ -29,6 +29,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         manager = getSupportFragmentManager();
+
+        if (savedInstanceState == null) {
+            FragmentHome homeFragment = new FragmentHome();
+            add(homeFragment, "HOME", "HOME");
+
+            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            bottomNav.setSelectedItemId(R.id.home);
+        }
+
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -36,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             String tag = null;
 
             int id = item.getItemId();
-            //ashlfdkj.lk/
+
             if (id == R.id.home) {
                 selectedFragment = new FragmentHome();
                 tag = "HOME";

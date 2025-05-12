@@ -222,12 +222,14 @@ public class RegisterActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);  // Chạy lại sau 1 giây
                 } else {
                     // Nếu hết thời gian, tự động đóng dialog và quay lại màn hình đăng ký
-                    dialog.dismiss();
-                    Toast.makeText(RegisterActivity.this, "Thời gian nhập mã xác minh đã hết. Đăng kí tài khoản thất bại", Toast.LENGTH_LONG).show();
-                    usernameEditText.setText("");
-                    emailEditText.setText("");
-                    passwordEditText.setText("");
-                    confirmPasswordEditText.setText("");
+                    if (dialog != null && dialog.isShowing()){
+                        dialog.dismiss();
+                        Toast.makeText(RegisterActivity.this, "Thời gian nhập mã xác minh đã hết. Đăng kí tài khoản thất bại", Toast.LENGTH_LONG).show();
+                        usernameEditText.setText("");
+                        emailEditText.setText("");
+                        passwordEditText.setText("");
+                        confirmPasswordEditText.setText("");
+                    }
                 }
             }
         };
