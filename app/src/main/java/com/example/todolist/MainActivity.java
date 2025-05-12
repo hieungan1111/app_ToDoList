@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentTransaction transaction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("userId", 3); // userId là ID bạn lấy từ database sau khi login thành công
-        editor.apply();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         manager = getSupportFragmentManager();
