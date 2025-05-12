@@ -20,6 +20,9 @@
     <color name="gray">#FF786F72</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_gray">#FFF7F8F8</color>
+    <color name="colorPrimary">#A4C2F4</color>
+    <color name="colorPrimaryDark">#8AB4F8</color>
+    <color name="colorAccent">#4285F4</color>
 
     <!-- Gradients (không thể định nghĩa trực tiếp trong colors.xml) -->
     <!-- Dùng trong drawable xml hoặc qua code nếu cần -->

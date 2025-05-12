@@ -1,3 +1,31 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">TodoList</string>
+    <string name="schedule_title">Thời gian biểu</string>
+    <string name="back">Quay lại</string>
+    <string name="more_options">Tùy chọn</string>
+    <string name="previous_month">Tháng trước</string>
+    <string name="next_month">Tháng sau</string>
+    <string name="add_task">Thêm công việc</string>
+    <string name="delete_task">Xóa công việc</string>
+    <string name="personal_activity">Hoạt động cá nhân</string>
+    <string name="external_activity">Hoạt động ngoài khóa</string>
+    <string name="completed">Đã hoàn thành</string>
+    <string name="task_deleted">Đã xóa công việc</string>
+    <string name="task_added">Đã thêm công việc</string>
+    <string name="please_enter_task_content">Vui lòng nhập nội dung công việc</string>
+    <string name="close">Đóng</string>
+    <string name="save">Lưu</string>
+    <string name="date">Ngày</string>
+    <string name="time">Thời gian</string>
+    <string name="priority_level">Mức độ ưu tiên</string>
+    <string name="task_details">Chi tiết công việc</string>
+    <string name="enter_task_content">Nhập nội dung công việc…</string>
+    <string name="low_priority">Thấp</string>
+    <string name="medium_priority">Trung bình</string>
+    <string name="high_priority">Cao</string>
+    <string-array name="priority_levels">
+        <item>Thấp</item>
+        <item>Trung bình</item>
+        <item>Cao</item>
+    </string-array>
 </resources>
