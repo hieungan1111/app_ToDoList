@@ -28,7 +28,13 @@ public class LoginActivity extends AppCompatActivity {
 
         // Nút quay lại
         backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(LoginActivity.this,WelcomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Chuyển sang trang Đăng ký
         registerText = findViewById(R.id.registerText);
