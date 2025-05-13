@@ -10,4 +10,6 @@ public interface NoteDAO {
     void updateNote(Note note);
     void deleteNote(int id);
     List<Note> getNotesByCategoryId(String categoryId, int userId);
+
+    public List<Note> getAllNotes();
 }

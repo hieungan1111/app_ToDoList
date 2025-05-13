@@ -12,8 +12,10 @@ import com.example.todolist.model.Alarm;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SQLiteAlarmDAO implements AlarmDAO {
 
@@ -26,7 +28,7 @@ public class SQLiteAlarmDAO implements AlarmDAO {
     }
 
     @Override
-    public void addAlarm(Alarm alarm) {
+    public long addAlarm(Alarm alarm) {
         ContentValues values = new ContentValues();
         values.put("alarmName", alarm.getAlarmName());
         values.put("time", dateFormat.format(alarm.getTime()));
@@ -34,7 +36,9 @@ public class SQLiteAlarmDAO implements AlarmDAO {
         values.put("isEnable", alarm.isEnable() ? 1 : 0);
         values.put("createAt", dateFormat.format(alarm.getCreateAt()));
         values.put("userId", alarm.getUserId());
-        db.insert("Alarm", null, values);
+        long id = db.insert("Alarm", null, values);
+
+        return id;
     }
     @Override
     public Alarm getAlarmById(int id) {
@@ -81,7 +85,11 @@ public class SQLiteAlarmDAO implements AlarmDAO {
         String alarmName = cursor.getString(cursor.getColumnIndexOrThrow("alarmName"));
         Date time = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("time")));
         String repeatString = cursor.getString(cursor.getColumnIndexOrThrow("repeatDays"));
-        List<String> repeatDays = Arrays.asList(repeatString.split(",")); // tách chuỗi thành List
+        List<String> repeatDays = (repeatString == null || repeatString.isEmpty()) ?
+                Collections.emptyList() :
+                Arrays.asList(repeatString.split(",")).stream()
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toList());
         boolean isEnable = cursor.getInt(cursor.getColumnIndexOrThrow("isEnable")) == 1;
         Date createAt = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("createAt")));
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));

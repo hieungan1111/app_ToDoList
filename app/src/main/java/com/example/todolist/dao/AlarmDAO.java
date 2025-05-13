@@ -4,7 +4,7 @@ import com.example.todolist.model.Alarm;
 import java.util.List;
 
 public interface AlarmDAO {
-    void addAlarm(Alarm alarm);
+    long addAlarm(Alarm alarm);
     Alarm getAlarmById(int id);
     List<Alarm> getAllAlarms();
     void updateAlarm(Alarm alarm);

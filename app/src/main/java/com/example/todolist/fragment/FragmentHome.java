@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,11 +13,16 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.todolist.DemActivity;
+import com.example.todolist.AlarmActivity;
+import com.example.todolist.NoteActivity;
 import com.example.todolist.R;
 
 public class FragmentHome extends Fragment {
 
     CardView cardCountdown;
+
+    CardView alarmButton, noteButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,5 +40,25 @@ public class FragmentHome extends Fragment {
                 startActivity(intent);
             }
         });
+
+        alarmButton = view.findViewById(R.id.alarm_card);
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển sang AddAlarmActivity
+                Intent intent = new Intent(getActivity(), AlarmActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        noteButton = view.findViewById(R.id.cardNote);
+        noteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NoteActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

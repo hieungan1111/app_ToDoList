@@ -11,6 +11,7 @@ import com.example.todolist.model.Note;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SQLiteNoteDAO implements NoteDAO {
         ContentValues values = new ContentValues();
         values.put("title", note.getTitle());
         values.put("content", note.getContent());
-        values.put("category", note.getCategory());
+        //values.put("category", note.getCategory());
         values.put("createAt", dateFormat.format(note.getCreateAt()));
         values.put("updateAt", dateFormat.format(note.getUpdateAt()));
         values.put("themeColor", note.getThemeColor());
@@ -69,7 +70,7 @@ public class SQLiteNoteDAO implements NoteDAO {
         ContentValues values = new ContentValues();
         values.put("title", note.getTitle());
         values.put("content", note.getContent());
-        values.put("category", note.getCategory());
+        //values.put("category", note.getCategory());
         values.put("createAt", dateFormat.format(note.getCreateAt()));
         values.put("updateAt", dateFormat.format(note.getUpdateAt()));
         values.put("themeColor", note.getThemeColor());
@@ -97,11 +98,22 @@ public class SQLiteNoteDAO implements NoteDAO {
         return list;
     }
 
+    @Override
+    public List<Note> getAllNotes() {
+        List<Note> list = new ArrayList<>();
+        Cursor cursor = db.query("Note", null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            list.add(extractNoteFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
     private Note extractNoteFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
         String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
         String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
-        String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+        //String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
         Date createAt = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("createAt")));
         Date updateAt = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("updateAt")));
         String themeColor = cursor.getString(cursor.getColumnIndexOrThrow("themeColor"));
@@ -111,7 +123,7 @@ public class SQLiteNoteDAO implements NoteDAO {
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
         String categoryId = cursor.getString(cursor.getColumnIndexOrThrow("categoryId"));
 
-        return new Note(id, title, content, category, createAt, updateAt, themeColor, fontColor, fontSize, isHidden, userId, categoryId);
+        return new Note(id, title, content, "category", createAt, updateAt, themeColor, fontColor, fontSize, isHidden, userId, categoryId);
     }
 
     private Date parseDate(String str) {
