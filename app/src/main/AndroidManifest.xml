@@ -47,9 +47,11 @@
             android:name=".MainActivity"
             android:exported="false" />
 
-        <receiver
-            android:name=".AlarmReceiver"
-            android:exported="true" />
+        <receiver android:name=".AlarmReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.todolist.ALARM_TRIGGER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

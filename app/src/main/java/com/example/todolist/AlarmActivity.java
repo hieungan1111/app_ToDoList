@@ -3,8 +3,13 @@ package com.example.todolist;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +39,9 @@ public class AlarmActivity extends AppCompatActivity implements AlarmAdapter.OnA
     SQLiteAlarmDAO dbHelper;
     AlarmAdapter alarmAdapter;
     RecyclerView recyclerView;
+    BroadcastReceiver alarmOffReceiver;
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +56,24 @@ public class AlarmActivity extends AppCompatActivity implements AlarmAdapter.OnA
 
         addAlarmDialog = findViewById(R.id.addAlarmDialog);
         addAlarmDialog.setOnClickListener(v -> openAlarmDialog());
+
+        alarmOffReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (AlarmReceiver.ACTION_ALARM_OFF.equals(intent.getAction())) {
+                    Log.d("AlarmActivity", "Received broadcast: " + AlarmReceiver.ACTION_ALARM_OFF);
+                    // Cập nhật danh sách báo thức trong adapter
+                    alarmAdapter.setAlarms(dbHelper.getAllAlarms());
+                    Log.d("AlarmActivity", "Updated RecyclerView with new alarms");
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter(AlarmReceiver.ACTION_ALARM_OFF);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(alarmOffReceiver, filter, RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(alarmOffReceiver, filter);
+        }
     }
 
     private void openAlarmDialog() {
@@ -107,7 +132,10 @@ public class AlarmActivity extends AppCompatActivity implements AlarmAdapter.OnA
                     0, alarmName, cal.getTime(), repeatDays, true, new Date(), 1
             );
 
-            dbHelper.addAlarm(newAlarm);
+            // Thêm báo thức và lấy ID thực sự
+            long newAlarmId = dbHelper.addAlarm(newAlarm); // Giả định addAlarm trả về ID
+            newAlarm.setId((int) newAlarmId); // Cập nhật ID cho newAlarm
+
             alarmAdapter.setAlarms(dbHelper.getAllAlarms());
             setAlarm(newAlarm);
             dialog.dismiss();
@@ -116,6 +144,20 @@ public class AlarmActivity extends AppCompatActivity implements AlarmAdapter.OnA
         dialog.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        alarmAdapter.setAlarms(dbHelper.getAllAlarms());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Hủy đăng ký BroadcastReceiver
+        if (alarmOffReceiver != null) {
+            unregisterReceiver(alarmOffReceiver);
+        }
+    }
     @Override
     public void onAlarmLongClick(Alarm alarm, int position) {
         new AlertDialog.Builder(this)
@@ -136,6 +178,8 @@ public class AlarmActivity extends AppCompatActivity implements AlarmAdapter.OnA
         Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("alarmName", alarm.getAlarmName());
         intent.putExtra("alarmId", alarm.getId());
+
+        Log.d("AlarmActivity", "Setting alarm ID: " + alarm.getId());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this, alarm.getId(), intent,

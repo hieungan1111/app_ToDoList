@@ -50,7 +50,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
         holder.txtTime.setText(sdf.format(alarm.time));
         holder.txtLabel.setText(alarm.alarmName);
-        holder.switchEnable.setChecked(alarm.isEnable);
+        holder.switchEnable.setChecked(alarm.isEnable());
 
         holder.switchEnable.setOnCheckedChangeListener((buttonView, isChecked) -> {
             alarm.setEnable(isChecked); // cập nhật trạng thái enable

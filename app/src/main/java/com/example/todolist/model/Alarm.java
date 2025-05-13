@@ -66,6 +66,19 @@ public class Alarm {
         return createAt;
     }
 
+    @Override
+    public String toString() {
+        return "Alarm{" +
+                "id=" + id +
+                ", alarmName='" + alarmName + '\'' +
+                ", time=" + time +
+                ", repeatDays=" + repeatDays +
+                ", isEnable=" + isEnable +
+                ", createAt=" + createAt +
+                ", userId=" + userId +
+                '}';
+    }
+
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
