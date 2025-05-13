@@ -70,7 +70,7 @@ public class SQLiteNoteDAO implements NoteDAO {
         ContentValues values = new ContentValues();
         values.put("title", note.getTitle());
         values.put("content", note.getContent());
-        values.put("category", note.getCategory());
+        //values.put("category", note.getCategory());
         values.put("createAt", dateFormat.format(note.getCreateAt()));
         values.put("updateAt", dateFormat.format(note.getUpdateAt()));
         values.put("themeColor", note.getThemeColor());

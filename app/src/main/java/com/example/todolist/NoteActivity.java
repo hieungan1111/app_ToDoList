@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -45,7 +46,35 @@ public class NoteActivity extends AppCompatActivity {
 
         // Lấy tất cả các ghi chú từ cơ sở dữ liệu
         noteList = dbHelper.getAllNotes();
-        noteAdapter = new NoteAdapter(noteList);
+        noteAdapter = new NoteAdapter(noteList, new NoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onNoteClick(Note note) {
+                Intent intent = new Intent(NoteActivity.this, AddNoteActivity.class);
+
+                intent.putExtra("is_editing", true);
+                intent.putExtra("note_id", note.getId());
+                intent.putExtra("note_title", note.getTitle());
+                intent.putExtra("note_content", note.getContent());
+                startActivityForResult(intent, REQUEST_ADD_NOTE);
+
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onNoteLongClick(Note note) {
+                // Khi giữ lâu để xóa
+                new AlertDialog.Builder(NoteActivity.this)
+                        .setTitle("Xóa ghi chú")
+                        .setMessage("Bạn có chắc chắn muốn xóa ghi chú này không?")
+                        .setPositiveButton("Xóa", (dialog, which) -> {
+                            dbHelper.deleteNote(note.getId()); // Xóa khỏi DB
+                            noteList.remove(note);             // Xóa khỏi danh sách
+                            noteAdapter.notifyDataSetChanged();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            }
+        });
         recyclerView.setAdapter(noteAdapter);
 
         fabAddNote = findViewById(R.id.fabAddNote);
@@ -65,21 +94,33 @@ public class NoteActivity extends AppCompatActivity {
         if (requestCode == REQUEST_ADD_NOTE && resultCode == RESULT_OK && data != null) {
             String title = data.getStringExtra("note_title");
             String content = data.getStringExtra("note_content");
+            boolean isEditing = data.getBooleanExtra("is_editing", false);
 
-            Note note = new Note();
-            note.setTitle(title);
-            note.setContent(content);
-            note.setUserId(1);
-            note.setCreateAt(new Date());
-            note.setUpdateAt(new Date());
-            note.setCategoryId(null);
-            note.setThemeColor(null);
-            note.setFontColor(null);
-            note.setFontSize(20);
-            note.setHidden(false);
+            if (isEditing) {
+                int noteId = data.getIntExtra("note_id", -1);
+                if (noteId != -1) {
+                    Note updatedNote = dbHelper.getNoteById(noteId); // Viết hàm này
+                    updatedNote.setTitle(title);
+                    updatedNote.setContent(content);
+                    updatedNote.setUpdateAt(new Date());
+                    dbHelper.updateNote(updatedNote);
+                }
+            } else {
+                Note note = new Note();
+                note.setTitle(title);
+                note.setContent(content);
+                note.setUserId(1);
+                note.setCreateAt(new Date());
+                note.setUpdateAt(new Date());
+                note.setCategoryId(null);
+                note.setThemeColor(null);
+                note.setFontColor(null);
+                note.setFontSize(20);
+                note.setHidden(false);
 
-            // Lưu ghi chú vào cơ sở dữ liệu
-            dbHelper.addNote(note);
+                // Lưu ghi chú vào cơ sở dữ liệu
+                dbHelper.addNote(note);
+            }
 
             // Lấy lại danh sách ghi chú từ cơ sở dữ liệu để cập nhật RecyclerView
             noteList.clear();

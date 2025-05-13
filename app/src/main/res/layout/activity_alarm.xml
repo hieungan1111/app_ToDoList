@@ -7,7 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".AlarmActivity">
 
+
     <!-- Nút "+" để mở dialog -->
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:text="Đặt báo thức"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addAlarmDialog"
+        app:layout_constraintHorizontal_bias="0.0" />
+
     <Button
         android:id="@+id/addAlarmDialog"
         android:layout_width="wrap_content"
