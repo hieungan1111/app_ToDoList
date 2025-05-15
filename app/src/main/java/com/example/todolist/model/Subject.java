@@ -10,18 +10,27 @@ public class Subject {
     public String timeStart;
     public String timeEnd;
     public String subjectName;
-    public String subjectColor;
     public List<String> weekDays;
     public int userId;
 
-    public Subject(int id, String rangeStart, String rangeEnd, String timeStart, String timeEnd, String subjectName, String subjectColor, List<String> weekDays, int userId) {
+    public Subject(String rangeStart, String rangeEnd, String timeStart, String timeEnd, String subjectName, List<String> weekDays, int userId) {
+
+        this.rangeStart = rangeStart;
+        this.rangeEnd = rangeEnd;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.subjectName = subjectName;
+        this.weekDays = weekDays;
+        this.userId = userId;
+    }
+
+    public Subject( int id ,String rangeStart, String rangeEnd, String timeStart, String timeEnd, String subjectName,List<String> weekDays, int userId) {
         this.id = id;
         this.rangeStart = rangeStart;
         this.rangeEnd = rangeEnd;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.subjectName = subjectName;
-        this.subjectColor = subjectColor;
         this.weekDays = weekDays;
         this.userId = userId;
     }
@@ -74,13 +83,6 @@ public class Subject {
         this.subjectName = subjectName;
     }
 
-    public String getSubjectColor() {
-        return subjectColor;
-    }
-
-    public void setSubjectColor(String subjectColor) {
-        this.subjectColor = subjectColor;
-    }
 
     public List<String> getWeekDays() {
         return weekDays;

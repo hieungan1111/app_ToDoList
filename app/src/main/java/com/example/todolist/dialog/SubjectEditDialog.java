@@ -21,17 +21,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class SubjectAddDialog {
+public class SubjectEditDialog {
 
-    // Interface để thông báo khi thêm môn học thành công
-    public interface OnSubjectAddedListener {
-        void onSubjectAdded();
+    // Interface để thông báo khi sửa môn học thành công
+    public interface OnSubjectEditedListener {
+        void onSubjectEdited();
     }
 
-    public static void showCustomDialog(Context context, int userId, OnSubjectAddedListener listener) {
+    public static void showEditDialog(Context context, Subject subject, OnSubjectEditedListener listener) {
         // Inflate layout
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.subject_add_dialog, null);
+        View view = inflater.inflate(R.layout.subject_edit_dialog, null);
 
         // Tạo dialog
         AlertDialog dialog = new AlertDialog.Builder(context)
@@ -53,13 +53,32 @@ public class SubjectAddDialog {
         CheckBox saturdayCheckBox = view.findViewById(R.id.subject_add_btn_saturday);
         CheckBox sundayCheckBox = view.findViewById(R.id.subject_add_btn_sunday);
         Button btnCancel = view.findViewById(R.id.subject_add_btn_cancel);
-        Button btnAdd = view.findViewById(R.id.subject_add_btn_add);
+        Button btnEdit = view.findViewById(R.id.subject_add_btn_add);
+
+        // Điền dữ liệu hiện tại của môn học
+        subjectNameEditText.setText(subject.getSubjectName());
+        startDateTextView.setText(subject.getRangeStart());
+        endDateTextView.setText(subject.getRangeEnd());
+        startTimeTextView.setText(subject.getTimeStart());
+        endTimeTextView.setText(subject.getTimeEnd());
+
+        // Điền trạng thái các ngày trong tuần
+        List<String> weekdays = subject.getWeekDays();
+        if (weekdays != null) {
+            mondayCheckBox.setChecked(weekdays.contains("monday"));
+            tuesdayCheckBox.setChecked(weekdays.contains("tuesday"));
+            wednesdayCheckBox.setChecked(weekdays.contains("wednesday"));
+            thursdayCheckBox.setChecked(weekdays.contains("thursday"));
+            fridayCheckBox.setChecked(weekdays.contains("friday"));
+            saturdayCheckBox.setChecked(weekdays.contains("saturday"));
+            sundayCheckBox.setChecked(weekdays.contains("sunday"));
+        }
 
         // Xử lý sự kiện cho nút Hủy
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        // Xử lý sự kiện cho nút Thêm
-        btnAdd.setOnClickListener(v -> {
+        // Xử lý sự kiện cho nút Sửa
+        btnEdit.setOnClickListener(v -> {
             // Thu thập dữ liệu từ giao diện
             String subjectName = subjectNameEditText.getText().toString().trim();
             String rangeStart = startDateTextView.getText().toString();
@@ -68,60 +87,59 @@ public class SubjectAddDialog {
             String timeEnd = endTimeTextView.getText().toString();
 
             // Thu thập các ngày trong tuần được chọn
-            List<String> weekdays = new ArrayList<>();
-            if (mondayCheckBox.isChecked()) weekdays.add("monday");
-            if (tuesdayCheckBox.isChecked()) weekdays.add("tuesday");
-            if (wednesdayCheckBox.isChecked()) weekdays.add("wednesday");
-            if (thursdayCheckBox.isChecked()) weekdays.add("thursday");
-            if (fridayCheckBox.isChecked()) weekdays.add("friday");
-            if (saturdayCheckBox.isChecked()) weekdays.add("saturday");
-            if (sundayCheckBox.isChecked()) weekdays.add("sunday");
+            List<String> updatedWeekdays = new ArrayList<>();
+            if (mondayCheckBox.isChecked()) updatedWeekdays.add("monday");
+            if (tuesdayCheckBox.isChecked()) updatedWeekdays.add("tuesday");
+            if (wednesdayCheckBox.isChecked()) updatedWeekdays.add("wednesday");
+            if (thursdayCheckBox.isChecked()) updatedWeekdays.add("thursday");
+            if (fridayCheckBox.isChecked()) updatedWeekdays.add("friday");
+            if (saturdayCheckBox.isChecked()) updatedWeekdays.add("saturday");
+            if (sundayCheckBox.isChecked()) updatedWeekdays.add("sunday");
 
             // Kiểm tra dữ liệu đầu vào
             if (subjectName.isEmpty()) {
                 Toast.makeText(context, "Vui lòng nhập tên môn học", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (weekdays.isEmpty()) {
+            if (updatedWeekdays.isEmpty()) {
                 Toast.makeText(context, "Vui lòng chọn ít nhất một ngày trong tuần", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            // Validate ngày giờ
-            if (HandleDate.compareDates(rangeStart, rangeEnd) != -1) {
+            if(HandleDate.compareDates(rangeStart,rangeEnd) != -1){
                 Toast.makeText(context, "Vui lòng chọn ngày bắt đầu nhỏ hơn ngày kết thúc", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (HandleDate.compareTimes(timeStart, timeEnd) != -1) {
-                Toast.makeText(context, "Vui lòng chọn giờ bắt đầu nhỏ hơn giờ kết thúc", Toast.LENGTH_SHORT).show();
+            if(HandleDate.compareTimes(timeStart,timeEnd) != -1){
+                Toast.makeText(context, "Vui lòng chọn giờ  bắt đầu nhỏ hơn ngày kết thúc", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Tạo đối tượng Subject
-            Subject subject = new Subject(
+            // Cập nhật đối tượng Subject
+            Subject updatedSubject = new Subject(
+                    subject.getId(), // Giữ nguyên ID
                     rangeStart,
                     rangeEnd,
                     timeStart,
                     timeEnd,
                     subjectName,
-                    weekdays,
-                    userId
+                    updatedWeekdays,
+                    subject.getUserId()
             );
 
             // Lưu vào cơ sở dữ liệu
             try {
                 SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
-                subjectDAO.addSubject(subject);
-                Toast.makeText(context, "Thêm môn học thành công", Toast.LENGTH_SHORT).show();
-                // Gọi callback để thông báo thêm thành công
+                subjectDAO.updateSubject(updatedSubject);
+                Toast.makeText(context, "Sửa môn học thành công", Toast.LENGTH_SHORT).show();
+                // Gọi callback để thông báo sửa thành công
                 if (listener != null) {
-                    listener.onSubjectAdded();
+                    listener.onSubjectEdited();
                 }
                 dialog.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(context, "Lỗi khi thêm môn học: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Lỗi khi sửa môn học: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -27,8 +27,8 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
     @Override
     public void addDeadline(Deadline deadline) {
         ContentValues values = new ContentValues();
-        values.put("day", dateFormat.format(deadline.getDay()));
-        values.put("timeEnd", dateFormat.format(deadline.getTimeEnd()));
+        values.put("day", (deadline.getDay()));
+        values.put("timeEnd",(deadline.getTimeEnd()));
         values.put("subject", deadline.getSubject());
         values.put("subjectId", deadline.getIdSubject());
         values.put("deadlineName", deadline.getDeadlineName());
@@ -63,8 +63,8 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
     @Override
     public void updateDeadline(Deadline deadline) {
         ContentValues values = new ContentValues();
-        values.put("day", dateFormat.format(deadline.getDay()));
-        values.put("timeEnd", dateFormat.format(deadline.getTimeEnd()));
+        values.put("day", (deadline.getDay()));
+        values.put("timeEnd", (deadline.getTimeEnd()));
         values.put("subject", deadline.getSubject());
         values.put("subjectId", deadline.getIdSubject());
         values.put("deadlineName", deadline.getDeadlineName());
@@ -73,13 +73,14 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(deadline.getId())});
     }
 
+
     @Override
     public void deleteDeadline(int id) {
         db.delete("Deadline", "id = ?", new String[]{String.valueOf(id)});
     }
 
     @Override
-    public void markDone(int id, boolean done) {
+    public void updateStatus(int id, boolean done) {
         ContentValues values = new ContentValues();
         values.put("isDone", done ? 1 : 0);
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(id)});
@@ -90,7 +91,7 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         String day = (cursor.getString(cursor.getColumnIndexOrThrow("day")));
         String timeEnd = (cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
         String subject = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
-        String idSubject = cursor.getString(cursor.getColumnIndexOrThrow("subjectId"));
+        int idSubject = cursor.getInt(cursor.getColumnIndexOrThrow("subjectId"));
         String deadlineName = cursor.getString(cursor.getColumnIndexOrThrow("deadlineName"));
         boolean isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone")) == 1;
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));

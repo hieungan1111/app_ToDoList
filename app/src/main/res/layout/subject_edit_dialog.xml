@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Thêm lịch môn học"
+            android:text="Sửa Môn học"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -204,7 +204,7 @@
                     android:id="@+id/subject_add_tv_start_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="07:19"
+                    android:text="7:19 PM"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -230,7 +230,7 @@
                     android:id="@+id/subject_add_tv_end_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="08:19"
+                    android:text="8:19 PM"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -257,7 +257,7 @@
                 android:id="@+id/subject_add_btn_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thêm"
+                android:text="Sửa"
                 android:textColor="#8B6BC7"
                 android:background="@android:color/transparent" />
 
