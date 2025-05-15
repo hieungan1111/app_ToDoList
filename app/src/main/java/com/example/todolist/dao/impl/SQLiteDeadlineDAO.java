@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.todolist.alarm.AlarmUtils;
 import com.example.todolist.dao.DeadlineDAO;
 import com.example.todolist.database.DatabaseHelper;
 import com.example.todolist.model.Deadline;
@@ -16,10 +17,12 @@ import java.util.List;
 
 public class SQLiteDeadlineDAO implements DeadlineDAO {
 
+    private final Context context;
     private final SQLiteDatabase db;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public SQLiteDeadlineDAO(Context context) {
+        this.context = context.getApplicationContext();
         DatabaseHelper helper = new DatabaseHelper(context);
         db = helper.getWritableDatabase();
     }
@@ -34,7 +37,13 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         values.put("deadlineName", deadline.getDeadlineName());
         values.put("isDone", deadline.isDone() ? 1 : 0);
         values.put("userId", deadline.getUserId());
-        db.insert("Deadline", null, values);
+//        db.insert("Deadline", null, values);
+
+        long insertedId = db.insert("Deadline", null, values);
+        deadline.setId((int) insertedId);
+
+        // Đặt lịch báo thức
+        AlarmUtils.scheduleDeadlineReminder(context, deadline);
     }
 
     @Override
@@ -76,6 +85,7 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
 
     @Override
     public void deleteDeadline(int id) {
+        AlarmUtils.cancelDeadlineReminder(context, id);
         db.delete("Deadline", "id = ?", new String[]{String.valueOf(id)});
     }
 
