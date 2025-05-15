@@ -8,7 +8,9 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.todolist.notification.NotificationHelper;
 
 public class DemActivity extends AppCompatActivity {
     private TextView tvTime;
@@ -55,6 +57,16 @@ public class DemActivity extends AppCompatActivity {
                     @Override
                     public void onFinish() {
                         tvTime.setText("00:00");
+                        NotificationHelper.showNotification(DemActivity.this, "Đếm ngược", "Thời gian đã hết");
+                        // Hiển thị AlertDialog
+                        new AlertDialog.Builder(DemActivity.this)
+                                .setTitle("Thông báo")
+                                .setMessage("Thời gian đã hết!")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", (dialog, which) -> {
+                                    dialog.dismiss();
+                                })
+                                .show();
                         btnStop.setVisibility(View.GONE);
                         gridLayout.setVisibility(View.VISIBLE);
                     }
