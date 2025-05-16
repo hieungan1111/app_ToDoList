@@ -110,6 +110,8 @@
 
         <receiver android:name=".alarm.DeadlineReminderReceiver"
             android:exported="true" />
+        <receiver android:name=".alarm.SubjectReminderReceiver" />
+
 
 
     </application>
