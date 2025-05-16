@@ -76,10 +76,19 @@
 
                 @Override
                 public void onDeleteDeadline(int deadlineId, int position) {
-                    SQLiteDeadlineDAO deadlineDAO = new SQLiteDeadlineDAO(getContext());
-                    deadlineDAO.deleteDeadline(deadlineId);
-                    adapter.removeItem(position);
+                    new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                            .setTitle("Xác nhận xóa")
+                            .setMessage("Bạn có chắc chắn muốn xóa deadline này không?")
+                            .setPositiveButton("Xóa", (dialog, which) -> {
+                                SQLiteDeadlineDAO deadlineDAO = new SQLiteDeadlineDAO(getContext());
+                                deadlineDAO.deleteDeadline(deadlineId);
+                                adapter.removeItem(position);
+                                Toast.makeText(getContext(), "Đã xóa deadline", Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
+                            .show();
                 }
+
 
                 @Override
                 public void onStatusChanged(Deadline deadline, boolean isCompleted, int position) {
