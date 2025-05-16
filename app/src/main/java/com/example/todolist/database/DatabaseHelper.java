@@ -1,5 +1,6 @@
 package com.example.todolist.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -140,4 +141,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS User");
         onCreate(db);
     }
+
+//    public void updateToken(String token){
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(COLUMN_FCM_TOKEN, token);
+//        db.insert(TABLE_USER, null, values);  // Lưu token vào cơ sở dữ liệu
+//        db.close();
+//    }
 }

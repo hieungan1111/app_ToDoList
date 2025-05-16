@@ -9,5 +9,5 @@ public interface DeadlineDAO {
     List<Deadline> getAllDeadlinesByUserId(int userId);
     void updateDeadline(Deadline deadline);
     void deleteDeadline(int id);
-    void markDone(int id, boolean done);
+    void updateStatus(int id, boolean done);
 }

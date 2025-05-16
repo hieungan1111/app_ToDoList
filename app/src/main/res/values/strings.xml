@@ -28,4 +28,6 @@
         <item>Trung bình</item>
         <item>Cao</item>
     </string-array>
+    <string name="select_subject_prompt">Chọn môn học</string>
+    <string name="select_status_prompt">Chọn trạng thái</string>
 </resources>
