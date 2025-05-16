@@ -80,11 +80,6 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         values.put("isDone", deadline.isDone() ? 1 : 0);
         values.put("userId", deadline.getUserId());
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(deadline.getId())});
-
-
-        AlarmUtils.cancelDeadlineReminder(context, deadline.id);
-        // Đặt lịch báo thức
-        AlarmUtils.scheduleDeadlineReminder(context, deadline);
     }
 
 
@@ -113,4 +108,6 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
 
         return new Deadline(id, day, timeEnd, subject, idSubject, deadlineName, isDone, userId);
     }
+
+
 }

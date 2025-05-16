@@ -22,11 +22,6 @@
     <color name="light_gray">#FFF7F8F8</color>
     <color name="selected_item">#853B7E</color>
 
-    <color name="button_background">#99507D</color>
-    <color name="button_stroke">#834F7C</color>
-    <color name="button_text">#FFFFFF</color>
-    <color name="ripple_color">#80FFFFFF</color>
-
     <!-- Gradients (không thể định nghĩa trực tiếp trong colors.xml) -->
     <!-- Dùng trong drawable xml hoặc qua code nếu cần -->
 
