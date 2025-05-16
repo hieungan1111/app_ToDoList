@@ -4,7 +4,7 @@ import com.example.todolist.model.Task;
 import java.util.List;
 
 public interface TaskDAO {
-    void addTask(Task task);
+    int addTask(Task task);
     Task getTaskById(int id);
     List<Task> getAllTasksByUserId(int userId);
     void updateTask(Task task);

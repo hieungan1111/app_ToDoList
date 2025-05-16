@@ -13,9 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.todolist.dao.impl.SQLiteTaskDAO;
+import com.example.todolist.dao.impl.SQLiteUserDAO;
 import com.example.todolist.model.Task;
+import com.example.todolist.work.ReminderWorker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -160,9 +165,37 @@ public class AddTaskActivity extends AppCompatActivity {
                 taskType
         );
 
-        taskDAO.addTask(newTask);
+        int insertedId = taskDAO.addTask(newTask); // ⬅ Nhận ID
+        newTask.setId(insertedId);                // ⬅ Gán lại ID
+        long oneHourBefore = selectedDateTime.getTimeInMillis() - 60 * 60 * 1000;
+        if (oneHourBefore > System.currentTimeMillis() && (priority == Task.TaskPriority.HIGH || priority == Task.TaskPriority.MEDIUM)) {
+            scheduleReminder(oneHourBefore, newTask);
+        }
+
         Toast.makeText(this, R.string.task_added, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }
+    private void scheduleReminder(long triggerTimeMillis, Task task) {
+        SQLiteUserDAO userDAO = new SQLiteUserDAO(this);
+        String email = userDAO.getUserById(task.getUserId()).getEmail();
+
+        Data inputData = new Data.Builder()
+                .putInt("task_id", task.getId())
+                .putInt("user_id", task.getUserId())
+                .putString("task_content", task.getContent())
+                .putString("user_email", email)
+                .putString("task_priority", task.getTaskPriority().name())
+                .build();
+
+        long delay = triggerTimeMillis - System.currentTimeMillis();
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ReminderWorker.class)
+                .setInitialDelay(delay, java.util.concurrent.TimeUnit.MILLISECONDS)
+                .setInputData(inputData)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(request);
+    }
+
 }

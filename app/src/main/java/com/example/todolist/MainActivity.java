@@ -1,5 +1,12 @@
 package com.example.todolist;
 
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -10,16 +17,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.core.content.ContextCompat;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+
+import com.example.todolist.fragment.*;
 
 import com.example.todolist.alarm.SubjectAlarmUtils;
 import com.example.todolist.dao.impl.SQLiteSubjectDAO;
@@ -29,6 +46,7 @@ import com.example.todolist.fragment.FragmentProfile;
 import com.example.todolist.fragment.FragmentStatistics;
 import com.example.todolist.fragment.FragmentTask;
 import com.example.todolist.model.Subject;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.Manifest;
@@ -43,10 +61,31 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     FragmentManager manager;
     FragmentTransaction transaction;
+
+    // 🛡️ Request permission launcher
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Log.i("Permission", "✅ POST_NOTIFICATIONS được cấp");
+                } else {
+                    Log.w("Permission", "❌ POST_NOTIFICATIONS bị từ chối");
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // ✅ Kiểm tra quyền POST_NOTIFICATIONS từ Android 13 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+
         // config cho deadline thong bao
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -109,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
     private void scheduleTodaySubjects(Context context) {
@@ -131,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 SubjectAlarmUtils.scheduleSubjectReminder(context, subject, today);
             }
         }
+
     }
 
     private void add(Fragment fg, String tag, String name) {
@@ -139,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.addToBackStack(name);
         transaction.commit();
     }
+
     @Override
     public void onBackPressed() {
         if (manager.getBackStackEntryCount() > 0) {

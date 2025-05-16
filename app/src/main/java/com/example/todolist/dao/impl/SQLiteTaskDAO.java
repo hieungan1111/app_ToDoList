@@ -27,7 +27,7 @@ public class SQLiteTaskDAO implements TaskDAO {
     }
 
     @Override
-    public void addTask(Task task) {
+    public int addTask(Task task) {
         ContentValues values = new ContentValues();
         values.put("day", dateFormat.format(task.getDay()));
         values.put("timeStart", dateFormat.format(task.getTimeStart()));
@@ -36,9 +36,13 @@ public class SQLiteTaskDAO implements TaskDAO {
         values.put("userId", task.getUserId());
         values.put("taskPriority", task.getTaskPriority().name());
         values.put("isHidden", task.isHidden() ? 1 : 0);
-        values.put("type", task.getType());  // 👈 thêm dòng này
-        db.insert("Task", null, values);
+        values.put("type", task.getType());
+
+        long id = db.insert("Task", null, values);
+        task.setId((int) id);  // 👈 Gán lại ID vào đối tượng Task
+        return (int) id;
     }
+
 
     @Override
     public Task getTaskById(int id) {

@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:fitsSystemWindows="true"
+
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -46,6 +49,7 @@
             app:layout_constraintLeft_toRightOf="@id/deadline_calendar_button"
             app:layout_constraintStart_toEndOf="@+id/deadline_calendar_button"
             app:layout_constraintTop_toBottomOf="@id/deadline_header_text" />
+
 
         <ImageButton
             android:id="@+id/deadline_calendar_button"

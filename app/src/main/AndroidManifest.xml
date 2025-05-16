@@ -29,6 +29,9 @@
 <!--            android:name=".StatisticsActivity"-->
 <!--            android:exported="false" />-->
         <activity
+            android:name=".NotificationHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddNoteActivity"
             android:exported="false" />
         <activity

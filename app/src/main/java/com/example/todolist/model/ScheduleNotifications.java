@@ -8,13 +8,22 @@ public class ScheduleNotifications {
     public int taskId;
     public String title;
     public int userId;
+    public boolean viewed;
 
-    public ScheduleNotifications(Date notificationTime, boolean sent, int taskId, String title, int userId) {
+    public ScheduleNotifications(Date notificationTime, boolean sent, int taskId, String title, int userId,boolean viewed) {
         this.notificationTime = notificationTime;
         this.sent = sent;
         this.taskId = taskId;
         this.title = title;
         this.userId = userId;
+        this.viewed = viewed;
+    }
+    public boolean isViewed() {
+        return viewed;
+    }
+
+    public void setViewed(boolean viewed) {
+        this.viewed = viewed;
     }
 
     public Date getNotificationTime() {
