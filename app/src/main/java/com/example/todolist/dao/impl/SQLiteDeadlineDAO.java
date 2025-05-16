@@ -153,5 +153,17 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         return new Deadline(id, day, timeEnd, subject, idSubject, deadlineName, isDone, userId);
     }
 
+    public List<Deadline> getCompletedDeadlineByUserId(int userId){
+        List<Deadline> list = new ArrayList<>();
+
+        String query = "SELECT * FROM Deadline WHERE isDone = 1 AND userId = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
 
 }
