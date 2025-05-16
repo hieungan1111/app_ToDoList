@@ -1,32 +1,50 @@
 package com.example.todolist;
 
-import android.content.SharedPreferences;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
-import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.todolist.fragment.FragmentCalender;
-import com.example.todolist.fragment.FragmentHome;
-import com.example.todolist.fragment.FragmentProfile;
-import com.example.todolist.fragment.FragmentStatistics;
-import com.example.todolist.fragment.FragmentTask;
+import com.example.todolist.fragment.*;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     FragmentManager manager;
     FragmentTransaction transaction;
+
+    // 🛡️ Request permission launcher
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Log.i("Permission", "✅ POST_NOTIFICATIONS được cấp");
+                } else {
+                    Log.w("Permission", "❌ POST_NOTIFICATIONS bị từ chối");
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // ✅ Kiểm tra quyền POST_NOTIFICATIONS từ Android 13 trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+
         manager = getSupportFragmentManager();
 
         if (savedInstanceState == null) {
@@ -38,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             String tag = null;
@@ -69,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
         });
-
-
     }
 
     private void add(Fragment fg, String tag, String name) {
@@ -79,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.addToBackStack(name);
         transaction.commit();
     }
+
     @Override
     public void onBackPressed() {
         if (manager.getBackStackEntryCount() > 0) {

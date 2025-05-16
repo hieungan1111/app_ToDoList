@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +19,13 @@ import com.example.todolist.DemActivity;
 import com.example.todolist.AlarmActivity;
 import com.example.todolist.NoteActivity;
 import com.example.todolist.R;
+import com.example.todolist.RemindersActivity;
+import com.example.todolist.dao.impl.SQLiteTaskDAO;
+import com.example.todolist.model.Task;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class FragmentHome extends Fragment {
 
@@ -59,6 +69,47 @@ public class FragmentHome extends Fragment {
                 startActivity(intent);
             }
         });
+        int userId = requireActivity().getSharedPreferences("UserPrefs", getContext().MODE_PRIVATE).getInt("userId", -1);
+        loadWeeklyProgressMain(view, userId);
 
+        ImageView arrowButtonReminder = view.findViewById(R.id.arrowButtonReminder);
+        arrowButtonReminder.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), RemindersActivity.class);
+            startActivity(intent);
+        });
     }
+    private void loadWeeklyProgressMain(View view, int userId) {
+        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        TextView progressLabel = view.findViewById(R.id.progressLabel);
+
+        SQLiteTaskDAO taskDAO = new SQLiteTaskDAO(requireContext());
+        List<Task> allTasks = taskDAO.getAllTasksByUserId(userId);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        int dayOfWeek = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+        calendar.add(Calendar.DAY_OF_MONTH, -dayOfWeek);
+        Date weekStart = calendar.getTime();
+        calendar.add(Calendar.DATE, 6);
+        Date weekEnd = calendar.getTime();
+
+        int weekCount = 0, weekDone = 0;
+
+        for (Task task : allTasks) {
+            Date taskDate = task.getDay();
+            if (!taskDate.before(weekStart) && !taskDate.after(weekEnd)) {
+                weekCount++;
+                if (task.isDone()) weekDone++;
+            }
+        }
+
+        int percent = weekCount > 0 ? (weekDone * 100 / weekCount) : 0;
+        progressBar.setProgress(percent);
+        progressLabel.setText(weekDone + "/" + weekCount + " nhiệm vụ");
+    }
+
 }

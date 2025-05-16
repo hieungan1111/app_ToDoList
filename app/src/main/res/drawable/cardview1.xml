@@ -2,7 +2,7 @@
     <corners android:radius="20dp"/> <!-- Bo góc -->
     <gradient
         android:angle="135"
-        android:startColor="@color/colorPrimary"
-        android:endColor="@color/primary_color1"
+        android:startColor="@color/primary_color1"
+        android:endColor="@color/primary_color2"
         android:type="linear"/>
 </shape>
