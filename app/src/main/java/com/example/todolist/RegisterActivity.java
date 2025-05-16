@@ -210,7 +210,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void startTimer(AlertDialog dialog, TextView countdownTextView) {
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
-            int timeLeft = 60; // Thời gian đếm ngược 30 giây
+            int timeLeft = 60; 
 
             @Override
             public void run() {

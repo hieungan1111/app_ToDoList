@@ -26,8 +26,18 @@
     <color name="blue">#4B89FF</color>
     <color name="purple">#D67BFF</color>
     <color name="dark_gray">#444444</color>
+    <color name="selected_item">#853B7E</color>
 
+    <color name="background_color">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="divider_color">#BDBDBD</color>
     <!-- Gradients (không thể định nghĩa trực tiếp trong colors.xml) -->
     <!-- Dùng trong drawable xml hoặc qua code nếu cần -->
+    <!-- New colors for the button -->
+    <color name="button_background">#3F51B5</color>
+    <color name="button_stroke">#303F9F</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="ripple_color">#80FFFFFF</color>
 
 </resources>

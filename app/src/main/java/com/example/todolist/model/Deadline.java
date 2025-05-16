@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Deadline {
     public int id;
-    public Date day;
-    public Date timeEnd;
+    public String day;
+    public String timeEnd;
     public String subject;
-    public String idSubject;
+    public int idSubject;
     public String deadlineName;
     public boolean isDone;
     public int userId;
@@ -20,19 +20,19 @@ public class Deadline {
         this.id = id;
     }
 
-    public Date getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(Date day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
-    public Date getTimeEnd() {
+    public String getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(Date timeEnd) {
+    public void setTimeEnd(String timeEnd) {
         this.timeEnd = timeEnd;
     }
 
@@ -44,11 +44,11 @@ public class Deadline {
         this.subject = subject;
     }
 
-    public String getIdSubject() {
+    public int getIdSubject() {
         return idSubject;
     }
 
-    public void setIdSubject(String idSubject) {
+    public void setIdSubject(int idSubject) {
         this.idSubject = idSubject;
     }
 
@@ -76,7 +76,7 @@ public class Deadline {
         this.userId = userId;
     }
 
-    public Deadline(int id, Date day, Date timeEnd, String subject, String idSubject, String deadlineName, boolean isDone, int userId) {
+    public Deadline(int id, String day, String timeEnd, String subject, int idSubject, String deadlineName, boolean isDone, int userId) {
         this.id = id;
         this.day = day;
         this.timeEnd = timeEnd;
@@ -85,6 +85,14 @@ public class Deadline {
         this.deadlineName = deadlineName;
         this.isDone = isDone;
         this.userId = userId;
-
+    }
+    public Deadline( String day, String timeEnd, String subject, int idSubject, String deadlineName, boolean isDone, int userId) {
+        this.day = day;
+        this.timeEnd = timeEnd;
+        this.subject = subject;
+        this.idSubject = idSubject;
+        this.deadlineName = deadlineName;
+        this.isDone = isDone;
+        this.userId = userId;
     }
 }

@@ -84,6 +84,25 @@ public class SQLiteTaskDAO implements TaskDAO {
         return taskList;
     }
 
+    public List<Task> getTaskDoneByUserId(int userId) {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT * FROM Task WHERE isDone = 1 AND userId = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = extractTaskFromCursor(cursor);
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return taskList;
+    }
+
 
     @Override
     public void updateTask(Task task) {
@@ -138,6 +157,42 @@ public class SQLiteTaskDAO implements TaskDAO {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT * FROM Task WHERE userId = ? AND type = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), type});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = extractTaskFromCursor(cursor);
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return taskList;
+    }
+
+    public List<Task> getTaskDone() {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT * FROM Task WHERE isDone = 1";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = extractTaskFromCursor(cursor);
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return taskList;
+    }
+
+    public List<Task> getAllTasks() {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT * FROM Task";
+        Cursor cursor = db.rawQuery(query,null);
 
         if (cursor.moveToFirst()) {
             do {
