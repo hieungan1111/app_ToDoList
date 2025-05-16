@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "ToDoList.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -101,6 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "taskId TEXT, " +
                 "title TEXT, " +
                 "userId TEXT, " +
+                "viewed INTEGER DEFAULT 0, " +
                 "FOREIGN KEY(taskId) REFERENCES Task(id), " +
                 "FOREIGN KEY(userId) REFERENCES User(id))";
 
@@ -138,6 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Categories");
         db.execSQL("DROP TABLE IF EXISTS Task");
         db.execSQL("DROP TABLE IF EXISTS User");
-        onCreate(db);
+
+        onCreate(db); // gọi lại để tạo bảng mới
     }
+
 }

@@ -31,6 +31,7 @@ public class SQLiteScheduleNotificationsDAO implements ScheduleNotificationsDAO 
         values.put("sent", notification.isSent() ? 1 : 0);
         values.put("taskId", notification.getTaskId());
         values.put("title", notification.getTitle());
+        values.put("viewed", notification.isViewed() ? 1 : 0);
         values.put("userId", notification.getUserId());
         db.insert("scheduleNotifications", null, values);
     }
@@ -65,7 +66,14 @@ public class SQLiteScheduleNotificationsDAO implements ScheduleNotificationsDAO 
         String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
 
-        return new ScheduleNotifications(notificationTime, sent, taskId, title, userId);
+        boolean viewed = cursor.getInt(cursor.getColumnIndexOrThrow("viewed")) == 1;
+
+        return new ScheduleNotifications(notificationTime, sent, taskId, title, userId, viewed);
+    }
+    public void markAllAsViewedByUser(int userId) {
+        ContentValues values = new ContentValues();
+        values.put("viewed", 1);
+        db.update("scheduleNotifications", values, "userId = ?", new String[]{String.valueOf(userId)});
     }
 
     private Date parseDate(String str) {

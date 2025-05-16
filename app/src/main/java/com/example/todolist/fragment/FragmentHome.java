@@ -18,10 +18,13 @@ import androidx.fragment.app.Fragment;
 import com.example.todolist.DemActivity;
 import com.example.todolist.AlarmActivity;
 import com.example.todolist.NoteActivity;
+import com.example.todolist.NotificationHistoryActivity;
 import com.example.todolist.R;
 import com.example.todolist.RemindersActivity;
 import com.example.todolist.dao.impl.SQLiteTaskDAO;
 import com.example.todolist.model.Task;
+import com.example.todolist.dao.impl.SQLiteScheduleNotificationsDAO;
+import com.example.todolist.model.ScheduleNotifications;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -77,6 +80,29 @@ public class FragmentHome extends Fragment {
             Intent intent = new Intent(requireContext(), RemindersActivity.class);
             startActivity(intent);
         });
+        ImageView notificationBell = view.findViewById(R.id.notification_bell);
+        notificationBell.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), NotificationHistoryActivity.class);
+            startActivity(intent);
+        });
+        SQLiteScheduleNotificationsDAO notificationDAO = new SQLiteScheduleNotificationsDAO(requireContext());
+        List<ScheduleNotifications> list = notificationDAO.getAllByUserId(userId);
+
+// Kiểm tra xem có notification nào chưa xem không
+        boolean hasUnread = false;
+        for (ScheduleNotifications noti : list) {
+            if (!noti.isViewed()) {
+                hasUnread = true;
+                break;
+            }
+        }
+
+// Cập nhật icon tùy theo trạng thái
+        if (hasUnread) {
+            notificationBell.setImageResource(R.drawable.notification_active);
+        } else {
+            notificationBell.setImageResource(R.drawable.p_notification);
+        }
     }
     private void loadWeeklyProgressMain(View view, int userId) {
         ProgressBar progressBar = view.findViewById(R.id.progressBar);

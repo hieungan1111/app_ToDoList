@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,13 +20,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.ExtracurricularTaskActivity;
+import com.example.todolist.NotificationHistoryActivity;
 import com.example.todolist.OverdueTasksActivity;
 import com.example.todolist.PersonalTaskActivity;
 import com.example.todolist.R;
 import com.example.todolist.RemindersActivity;
 import com.example.todolist.ShowTaskActivity;
 import com.example.todolist.adapter.UpcomingTaskRecyclerAdapter;
+import com.example.todolist.dao.impl.SQLiteScheduleNotificationsDAO;
 import com.example.todolist.dao.impl.SQLiteTaskDAO;
+import com.example.todolist.model.ScheduleNotifications;
 import com.example.todolist.model.Task;
 
 import java.text.SimpleDateFormat;
@@ -62,6 +66,29 @@ public class FragmentTask extends Fragment {
         overTime.setOnClickListener(v -> startActivity(new Intent(requireContext(), OverdueTasksActivity.class)));
         personal_activity.setOnClickListener(v -> startActivity(new Intent(requireContext(), PersonalTaskActivity.class)));
         extracurricular_activity.setOnClickListener(v -> startActivity(new Intent(requireContext(), ExtracurricularTaskActivity.class)));
+        ImageButton notificationButton = view.findViewById(R.id.imageButton);
+
+        SQLiteScheduleNotificationsDAO notificationDAO = new SQLiteScheduleNotificationsDAO(requireContext());
+        List<ScheduleNotifications> notifications = notificationDAO.getAllByUserId(userId);
+
+        boolean hasUnread = false;
+        for (ScheduleNotifications noti : notifications) {
+            if (!noti.isViewed()) {
+                hasUnread = true;
+                break;
+            }
+        }
+
+        if (hasUnread) {
+            notificationButton.setImageResource(R.drawable.notification_active); // biểu tượng có thông báo mới
+        } else {
+            notificationButton.setImageResource(R.drawable.notifications); // biểu tượng mặc định
+        }
+
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), NotificationHistoryActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override

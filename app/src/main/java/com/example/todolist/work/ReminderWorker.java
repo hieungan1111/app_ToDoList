@@ -53,7 +53,8 @@ public class ReminderWorker extends Worker {
                 true,
                 taskId,
                 content,
-                userId
+                userId,
+                false
         );
         new SQLiteScheduleNotificationsDAO(getApplicationContext()).addNotification(notification);
 
