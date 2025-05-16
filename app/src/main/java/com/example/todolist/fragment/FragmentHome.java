@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.todolist.CalendarActivity;
 import com.example.todolist.DemActivity;
 import com.example.todolist.AlarmActivity;
 import com.example.todolist.NoteActivity;
@@ -129,6 +130,14 @@ public class FragmentHome extends Fragment {
         } else {
             notificationBell.setImageResource(R.drawable.p_notification);
         }
+        Button viewScheduleButton = view.findViewById(R.id.view_schedule_button);
+        viewScheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), CalendarActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private void loadWeeklyProgressMain(View view, int userId) {
         ProgressBar progressBar = view.findViewById(R.id.progressBar);

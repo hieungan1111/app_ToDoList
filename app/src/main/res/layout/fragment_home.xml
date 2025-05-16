@@ -340,7 +340,7 @@
                             android:padding="8dp"
                             android:background="@drawable/bg_round_purple1"
                             android:src="@drawable/add_notes"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -375,7 +375,7 @@
                             android:background="@drawable/bg_round_purple"
                             android:padding="6dp"
                             android:src="@drawable/arrow_right"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintTop_toBottomOf="@id/subtitleNote"
                             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -405,7 +405,7 @@
                             android:padding="8dp"
                             android:background="@drawable/bg_round_purple2"
                             android:src="@drawable/event_available"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -440,7 +440,7 @@
                             android:background="@drawable/bg_round_purple21"
                             android:padding="6dp"
                             android:src="@drawable/arrow_right"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintTop_toBottomOf="@id/subtitleDeadline"
                             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -470,7 +470,7 @@
                             android:padding="8dp"
                             android:background="@drawable/bg_round_purple3"
                             android:src="@drawable/timer_24px"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -505,7 +505,7 @@
                             android:background="@drawable/bg_round_purple32"
                             android:padding="6dp"
                             android:src="@drawable/arrow_right"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintTop_toBottomOf="@id/subtitleCountdown"
                             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -535,7 +535,7 @@
                             android:padding="8dp"
                             android:background="@drawable/bg_round_purple4"
                             android:src="@drawable/ic_calendar"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -570,7 +570,7 @@
                             android:background="@drawable/bg_round_purple42"
                             android:padding="6dp"
                             android:src="@drawable/arrow_right"
-                            android:tint="@android:color/white"
+                            app:tint="@android:color/white"
                             app:layout_constraintTop_toBottomOf="@id/subtitleReminder"
                             app:layout_constraintEnd_toEndOf="parent" />
 
