@@ -13,7 +13,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Chờ 2 giây rồi chuyển sang LoginActivity
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashActivity.this, WelcomeActivity.class);
             startActivity(intent);
