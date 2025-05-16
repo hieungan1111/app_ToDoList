@@ -1,5 +1,7 @@
 package com.example.todolist.dialog;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -54,7 +56,9 @@ public class DeadlineAddDialog {
 
         // Lấy danh sách môn học từ cơ sở dữ liệu
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
-        List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(1);
+        SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        int userId = prefs.getInt("userId", -1);
+        List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(userId);
         List<String> subjectNames = new ArrayList<>();
         subjectNames.add("Chọn môn học"); // Mục mặc định
         for (Subject subject : subjects) {
@@ -96,6 +100,8 @@ public class DeadlineAddDialog {
                     idSubject = subject.getId();
                 }
             }
+            // Tạo đối tượng Deadline
+
 
             Toast.makeText(context, "tao deadline dang tao", Toast.LENGTH_SHORT).show();
             Deadline deadline = new Deadline(
@@ -105,7 +111,7 @@ public class DeadlineAddDialog {
                     idSubject,
                     deadlineName,
                     false,
-                    1
+                    userId
             );
 
             // Lưu vào cơ sở dữ liệu

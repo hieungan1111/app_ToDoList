@@ -1,9 +1,12 @@
 package com.example.todolist.dialog;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -56,7 +59,10 @@ public class DeadlineEditDialog {
         // Lấy danh sách môn học từ cơ sở dữ liệu
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
 
-        List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(userId);
+        SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        int useriddd = prefs.getInt("userId", -1);
+
+        List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(useriddd);
         List<String> subjectNames = new ArrayList<>();
         subjectNames.add("Chọn môn học");
         int selectedPosition = 0;

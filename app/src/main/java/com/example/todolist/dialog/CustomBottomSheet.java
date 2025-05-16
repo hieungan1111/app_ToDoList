@@ -1,9 +1,12 @@
 package com.example.todolist.dialog;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -79,7 +82,9 @@ public class CustomBottomSheet {
     private void refreshSubjectList() {
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
         subjectList.clear();
-        List<Subject> updatedList = subjectDAO.getAllSubjectsByUserId(1);
+        SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        int userId = prefs.getInt("userId", -1);
+        List<Subject> updatedList = subjectDAO.getAllSubjectsByUserId(userId);
         if (updatedList != null) {
             subjectList.addAll(updatedList);
         }
@@ -89,7 +94,9 @@ public class CustomBottomSheet {
     private void refreshSubjectListByWeekday(String weekday, String date) {
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
         subjectList.clear();
-        List<Subject> updatedList = subjectDAO.getSubjectsByWeekday(weekday, date);
+        SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        int userId = prefs.getInt("userId", -1);
+        List<Subject> updatedList = subjectDAO.getSubjectsByWeekday(userId, weekday, date);
         if (updatedList != null) {
             subjectList.addAll(updatedList);
         }
@@ -152,7 +159,9 @@ public class CustomBottomSheet {
         subjectList = new ArrayList<>();
 
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
-        List<Subject> subjects = subjectDAO.getSubjectsByWeekday(dayOfWeekString, formattedDate);
+        SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        int userId = prefs.getInt("userId", -1);
+        List<Subject> subjects = subjectDAO.getSubjectsByWeekday(userId, dayOfWeekString, formattedDate);
         if (subjects != null) {
             subjectList.addAll(subjects);
         }

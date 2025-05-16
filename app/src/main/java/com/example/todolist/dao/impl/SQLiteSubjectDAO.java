@@ -1,7 +1,10 @@
 package com.example.todolist.dao.impl;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -84,10 +87,11 @@ public class SQLiteSubjectDAO implements SubjectDAO {
     }
 
     @Override
-    public List<Subject> getSubjectsByWeekday(String weekday, String day) {
+    public List<Subject> getSubjectsByWeekday(int userId, String weekday, String day) {
         List<Subject> list = new ArrayList<>();
         String selection = "userId = ? AND weekdays LIKE ? AND rangeStart <= ? AND rangeEnd >= ?";
-        String[] selectionArgs = new String[]{String.valueOf(1), "%" + weekday + "%", day, day};
+
+        String[] selectionArgs = new String[]{String.valueOf(userId), "%" + weekday + "%", day, day};
         Cursor cursor = db.query("Subject", null, selection, selectionArgs, null, null, "timeStart ASC");
         while (cursor.moveToNext()) {
             list.add(extractSubjectFromCursor(cursor));

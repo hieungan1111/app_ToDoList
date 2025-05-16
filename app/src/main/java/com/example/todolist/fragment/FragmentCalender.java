@@ -1,6 +1,9 @@
     package com.example.todolist.fragment;
     
+    import static android.content.Context.MODE_PRIVATE;
+
     import android.app.DatePickerDialog;
+    import android.content.SharedPreferences;
     import android.os.Bundle;
     import android.view.LayoutInflater;
     import android.view.View;
@@ -157,7 +160,9 @@
 
         private void loadSubjects() {
             SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(getContext());
-            List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(1);
+            SharedPreferences prefs = getContext().getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            int userId = prefs.getInt("userId", -1);
+            List<Subject> subjects = subjectDAO.getAllSubjectsByUserId(userId);
             if (subjects != null) {
                 subjectList.clear();
                 subjectList.addAll(subjects);
@@ -195,7 +200,9 @@
             SQLiteDeadlineDAO deadlineDAO = new SQLiteDeadlineDAO(getContext());
             deadlineList.clear();
             Integer subjectId = subjectSpinner.getSelectedItemPosition() == 0 ? null : subjectList.get(subjectSpinner.getSelectedItemPosition() - 1).getId();
-            List<Deadline> updatedList = deadlineDAO.getDeadlinesByFilters(1, subjectId, selectedDate, selectedStatus);
+            SharedPreferences prefs = getContext().getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            int userId = prefs.getInt("userId", -1);
+            List<Deadline> updatedList = deadlineDAO.getDeadlinesByFilters(userId, subjectId, selectedDate, selectedStatus);
             if (updatedList != null) {
                 deadlineList.addAll(updatedList);
             }

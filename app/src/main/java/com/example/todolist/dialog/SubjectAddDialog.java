@@ -1,9 +1,12 @@
 package com.example.todolist.dialog;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -99,6 +102,8 @@ public class SubjectAddDialog {
             }
 
             // Tạo đối tượng Subject
+            SharedPreferences prefs = context.getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            int userIdddd = prefs.getInt("userId", -1);
             Subject subject = new Subject(
                     rangeStart,
                     rangeEnd,
@@ -106,7 +111,7 @@ public class SubjectAddDialog {
                     timeEnd,
                     subjectName,
                     weekdays,
-                    userId
+                    userIdddd
             );
 
             // Lưu vào cơ sở dữ liệu
