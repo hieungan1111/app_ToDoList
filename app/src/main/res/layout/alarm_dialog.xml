@@ -23,66 +23,61 @@
             android:paddingTop="10dp"
             android:text="Lặp lại vào các ngày:" />
 
-        <GridLayout
-            android:id="@+id/dayGrid"
+        <!-- Replaced GridLayout with HorizontalScrollView -->
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:alignmentMode="alignMargins"
-            android:columnCount="7"
-            android:padding="0dp"
-            android:rowCount="1">
+            android:scrollbars="none">
 
-            <CheckBox
-                android:id="@+id/cbMon"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T2" />
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/cbTue"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T3" />
+                <CheckBox
+                    android:id="@+id/cbMon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T2" />
 
-            <CheckBox
-                android:id="@+id/cbWed"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T4" />
+                <CheckBox
+                    android:id="@+id/cbTue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T3" />
 
-            <CheckBox
-                android:id="@+id/cbThu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T5" />
+                <CheckBox
+                    android:id="@+id/cbWed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T4" />
 
-            <CheckBox
-                android:id="@+id/cbFri"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T6" />
+                <CheckBox
+                    android:id="@+id/cbThu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T5" />
 
-            <CheckBox
-                android:id="@+id/cbSat"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="T7" />
+                <CheckBox
+                    android:id="@+id/cbFri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T6" />
 
-            <CheckBox
-                android:id="@+id/cbSun"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="CN" />
-        </GridLayout>
+                <CheckBox
+                    android:id="@+id/cbSat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T7" />
 
+                <CheckBox
+                    android:id="@+id/cbSun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CN" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <!-- Nội dung báo thức -->
         <EditText

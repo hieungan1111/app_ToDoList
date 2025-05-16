@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.todolist.dao.DeadlineDAO;
 import com.example.todolist.database.DatabaseHelper;
 import com.example.todolist.model.Deadline;
+import com.example.todolist.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
     private final SQLiteDatabase db;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public SQLiteDeadlineDAO(Context context) {
+    public SQLiteDeadlineDAO(Context context, DatabaseHelper dbHelper) {
         DatabaseHelper helper = new DatabaseHelper(context);
         db = helper.getWritableDatabase();
     }
@@ -48,6 +49,23 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         cursor.close();
         return null;
     }
+
+//    List<Deadline> getAllDeadlines(){
+//        List<Deadline> deadlineList = new ArrayList<>();
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        String query = "SELECT * FROM Task";
+//        Cursor cursor = db.rawQuery(query,null);
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Task task = extractTaskFromCursor(cursor);
+//                taskList.add(task);
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+//        return taskList;
+//    }
 
     @Override
     public List<Deadline> getAllDeadlinesByUserId(int userId) {
