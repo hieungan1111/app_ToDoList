@@ -4,7 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.example.todolist.alarm.AlarmUtils;
+import com.example.todolist.alarm.SubjectAlarmUtils;
 import com.example.todolist.dao.SubjectDAO;
 import com.example.todolist.database.DatabaseHelper;
 import com.example.todolist.model.Subject;
@@ -12,18 +15,22 @@ import com.example.todolist.model.Subject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class SQLiteSubjectDAO implements SubjectDAO {
 
+    private  final Context context;
     private final SQLiteDatabase db;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public SQLiteSubjectDAO(Context context) {
         DatabaseHelper helper = new DatabaseHelper(context);
         db = helper.getWritableDatabase();
+        this.context =context;
     }
 
 
@@ -37,7 +44,18 @@ public class SQLiteSubjectDAO implements SubjectDAO {
         values.put("subject", subject.getSubjectName());
         values.put("weekdays", String.join(",", subject.getWeekDays()));
         values.put("userId", subject.getUserId());
-        db.insert("Subject", null, values);
+
+        Calendar calendar = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String weekday = new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date()).toLowerCase();
+
+        long insertedId = db.insert("Subject", null, values);
+        subject.setId((int) insertedId);
+
+
+        if (subject.getWeekDays().contains(weekday)) {
+            SubjectAlarmUtils.scheduleSubjectReminder(context, subject, today);
+        }
     }
 
     @Override
@@ -85,6 +103,7 @@ public class SQLiteSubjectDAO implements SubjectDAO {
 
     @Override
     public List<Subject> getSubjectsByWeekday(String weekday, String day) {
+        Log.d("SQLiteSubjectDAO", "Query weekday: " + weekday + " | date: " + day);
         List<Subject> list = new ArrayList<>();
         String selection = "userId = ? AND weekdays LIKE ? AND rangeStart <= ? AND rangeEnd >= ?";
         String[] selectionArgs = new String[]{String.valueOf(1), "%" + weekday + "%", day, day};

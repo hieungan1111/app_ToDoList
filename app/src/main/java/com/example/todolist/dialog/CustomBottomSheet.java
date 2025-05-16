@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton; // Thêm import này
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,7 @@ public class CustomBottomSheet {
     private TextView subject_date;
     private ImageButton subject_img_calender;
     private FloatingActionButton subject_bt_add;
+    private AppCompatButton subject_btn_view_all; // Thêm trường này
 
     public CustomBottomSheet(Activity activity, Context context) {
         this.activity = activity;
@@ -54,6 +56,8 @@ public class CustomBottomSheet {
 
         subject_img_calender.setOnClickListener(v -> showDatePicker());
         subject_bt_add.setOnClickListener(v -> addSubject());
+        // Thêm sự kiện cho nút "Xem tất cả"
+        subject_btn_view_all.setOnClickListener(v -> refreshSubjectList());
 
         bottomSheetDialog.show();
     }
@@ -83,12 +87,25 @@ public class CustomBottomSheet {
     private void refreshSubjectListByWeekday(String weekday, String date) {
         SQLiteSubjectDAO subjectDAO = new SQLiteSubjectDAO(context);
         subjectList.clear();
-        List<Subject> updatedList = subjectDAO.getSubjectsByWeekday(weekday, date);
+
+        // ✅ Chuyển từ dd/MM/yyyy → yyyy-MM-dd
+        String formattedDate = "";
+        try {
+            SimpleDateFormat sdfInput = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            formattedDate = sdfOutput.format(sdfInput.parse(date));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        List<Subject> updatedList = subjectDAO.getSubjectsByWeekday(weekday, formattedDate);
         if (updatedList != null) {
             subjectList.addAll(updatedList);
         }
         adapter.notifyDataSetChanged();
     }
+
 
     private void showDatePicker() {
         final Calendar calendar = Calendar.getInstance();
@@ -99,19 +116,16 @@ public class CustomBottomSheet {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 context,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Định dạng ngày được chọn
                     String selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
                     subject_date.setText(selectedDate);
 
-                    // Tính thứ trong tuần từ ngày được chọn
                     calendar.set(selectedYear, selectedMonth, selectedDay);
                     int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
                     String[] daysOfWeek = {
                             "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
                     };
-                    String weekday = daysOfWeek[dayOfWeek - 1]; // Điều chỉnh để phù hợp với mảng
+                    String weekday = daysOfWeek[dayOfWeek - 1];
 
-                    // Làm mới danh sách môn học theo weekday và ngày
                     refreshSubjectListByWeekday(weekday, selectedDate);
                 },
                 year, month, day
@@ -129,18 +143,20 @@ public class CustomBottomSheet {
         recyclerView = bottomSheetDialog.findViewById(R.id.subject_recycle_view);
         subject_img_calender = bottomSheetDialog.findViewById(R.id.subject_img_calender);
         subject_bt_add = bottomSheetDialog.findViewById(R.id.subject_btn_add);
+        subject_btn_view_all = bottomSheetDialog.findViewById(R.id.subject_btn_view_all); // Khởi tạo nút
     }
 
     private void initAdapter() {
-        // Lấy thời gian và thứ hôm nay
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String formattedDate = dateFormat.format(calendar.getTime());
+        // dd/MM/yyyy → yyyy-MM-dd
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+
         String[] daysOfWeek = {
                 "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
         };
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK); // 1 = Sunday, 7 = Saturday
-        String dayOfWeekString = daysOfWeek[dayOfWeek - 1]; // Điều chỉnh để phù hợp với mảng
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        String dayOfWeekString = daysOfWeek[dayOfWeek - 1];
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         subjectList = new ArrayList<>();
