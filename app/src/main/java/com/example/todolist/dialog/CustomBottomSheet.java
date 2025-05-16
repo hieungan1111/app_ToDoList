@@ -52,6 +52,12 @@ public class CustomBottomSheet {
         init();
         initAdapter();
 
+        // Bắt sự kiện cho nút "Xem tất cả"
+        androidx.appcompat.widget.AppCompatButton subject_btn_view_all = bottomSheetDialog.findViewById(R.id.subject_btn_view_all);
+        subject_btn_view_all.setOnClickListener(v -> {
+            refreshSubjectList(); // Tải lại toàn bộ danh sách môn học
+        });
+
         subject_img_calender.setOnClickListener(v -> showDatePicker());
         subject_bt_add.setOnClickListener(v -> addSubject());
 

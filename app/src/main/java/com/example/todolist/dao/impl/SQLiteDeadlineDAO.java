@@ -80,6 +80,9 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         values.put("isDone", deadline.isDone() ? 1 : 0);
         values.put("userId", deadline.getUserId());
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(deadline.getId())});
+
+        AlarmUtils.cancelDeadlineReminder(context, deadline.id);
+        AlarmUtils.scheduleDeadlineReminder(context, deadline);
     }
 
 
@@ -95,6 +98,47 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         values.put("isDone", done ? 1 : 0);
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(id)});
     }
+
+    // Thêm phương thức mới để lấy deadline theo subjectId
+    public List<Deadline> getDeadlinesBySubjectId(int subjectId) {
+        List<Deadline> list = new ArrayList<>();
+        Cursor cursor = db.query("Deadline", null, "subjectId = ?", new String[]{String.valueOf(subjectId)}, null, null, null);
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
+    // Thêm phương thức mới để lọc deadline theo subjectId, ngày, và trạng thái
+    public List<Deadline> getDeadlinesByFilters(int userId, Integer subjectId, String dueDate, Integer status) {
+        List<Deadline> list = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM Deadline WHERE userId = ?");
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(userId));
+
+        if (subjectId != null) {
+            query.append(" AND subjectId = ?");
+            args.add(String.valueOf(subjectId));
+        }
+        if (dueDate != null) {
+            query.append(" AND day <= ?");
+            args.add(dueDate);
+        }
+        if (status != null) {
+            query.append(" AND isDone = ?");
+            args.add(status == 1 ? "1" : "0");
+        }
+
+        Cursor cursor = db.rawQuery(query.toString(), args.toArray(new String[0]));
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
+
 
     private Deadline extractDeadlineFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));

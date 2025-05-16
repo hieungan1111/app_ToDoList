@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ToDoList</string>
+    <string name="select_subject_prompt">Chọn môn học</string>
+    <string name="select_status_prompt">Chọn trạng thái</string>
 </resources>
