@@ -1,11 +1,15 @@
 package com.example.todolist;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,6 +24,9 @@ import com.example.todolist.fragment.FragmentStatistics;
 import com.example.todolist.fragment.FragmentTask;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.Manifest;
+
+
 public class MainActivity extends AppCompatActivity {
     FragmentManager manager;
     FragmentTransaction transaction;
@@ -27,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // config cho deadline thong bao
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
         manager = getSupportFragmentManager();
 
         if (savedInstanceState == null) {

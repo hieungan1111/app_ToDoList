@@ -9,4 +9,5 @@ public interface SubjectDAO {
     List<Subject> getAllSubjectsByUserId(int userId);
     void updateSubject(Subject subject);
     void deleteSubject(int id);
+    List<Subject> getSubjectsByWeekday( int   userId, String weekday, String rangeStart);
 }

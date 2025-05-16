@@ -185,7 +185,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:text="Tỷ lệ trễ hạn các nhiệm vụ"
+        android:text="Tỷ lệ hoàn thành các công việc"
         android:textColor="#666666"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/chart_title" />

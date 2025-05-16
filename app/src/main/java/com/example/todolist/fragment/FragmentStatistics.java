@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.todolist.R;
 import com.example.todolist.dao.impl.SQLiteDeadlineDAO;
+import com.example.todolist.dao.impl.SQLiteSubjectDAO;
 import com.example.todolist.dao.impl.SQLiteTaskDAO;
 import com.example.todolist.view.DonutChartView;
 
@@ -31,6 +32,7 @@ public class FragmentStatistics extends Fragment {
     private TextView taskRate, deadlineRate, classRate;
     private SQLiteTaskDAO taskDAO;
     private SQLiteDeadlineDAO deadlineDAO;
+    private SQLiteSubjectDAO subjectDAO;
     private int userId;
 
     public FragmentStatistics() {
@@ -67,6 +69,8 @@ public class FragmentStatistics extends Fragment {
         classRate = view.findViewById(R.id.classRate);
 
         taskDAO = new SQLiteTaskDAO(view.getContext());
+        deadlineDAO = new SQLiteDeadlineDAO(view.getContext());
+        subjectDAO = new SQLiteSubjectDAO(view.getContext());
 
         // Tính phần trăm công việc hoàn thành
         int totalTasks = taskDAO.getAllTasksByUserId(userId).size();
@@ -79,12 +83,19 @@ public class FragmentStatistics extends Fragment {
             percentage = (completedTasks * 100f) / totalTasks;
         }
 
-        String rate = "" + completedTasks + "/" + totalTasks;
-        taskRate.setText(rate);
+        // Deadline hoàn thành
+        int totalDeadlines = deadlineDAO.getAllDeadlinesByUserId(userId).size();
+        int completedDeadline = deadlineDAO.getCompletedDeadlineByUserId(userId).size();
+        int subject = subjectDAO.getAllSubjectsByUserId(userId).size();
+
+        taskRate.setText("" + completedTasks + "/" + totalTasks);
+        deadlineRate.setText("" + completedDeadline + "/" + totalDeadlines);
+        classRate.setText("" + subject);
 
         // Set up the donut chart
         donutChartView.setPercentage(percentage);
         chartPercentage.setText(String.format("%.0f%%", percentage));
+
 
         // Set up back button
         btnBack.setOnClickListener(v -> {

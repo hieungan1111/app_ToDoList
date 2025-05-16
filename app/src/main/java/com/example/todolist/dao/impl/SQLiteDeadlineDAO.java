@@ -5,10 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.todolist.alarm.AlarmUtils;
 import com.example.todolist.dao.DeadlineDAO;
 import com.example.todolist.database.DatabaseHelper;
 import com.example.todolist.model.Deadline;
-import com.example.todolist.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,10 +17,12 @@ import java.util.List;
 
 public class SQLiteDeadlineDAO implements DeadlineDAO {
 
+    private final Context context;
     private final SQLiteDatabase db;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public SQLiteDeadlineDAO(Context context, DatabaseHelper dbHelper) {
+    public SQLiteDeadlineDAO(Context context) {
+        this.context = context.getApplicationContext();
         DatabaseHelper helper = new DatabaseHelper(context);
         db = helper.getWritableDatabase();
     }
@@ -28,14 +30,20 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
     @Override
     public void addDeadline(Deadline deadline) {
         ContentValues values = new ContentValues();
-        values.put("day", dateFormat.format(deadline.getDay()));
-        values.put("timeEnd", dateFormat.format(deadline.getTimeEnd()));
+        values.put("day", (deadline.getDay()));
+        values.put("timeEnd",(deadline.getTimeEnd()));
         values.put("subject", deadline.getSubject());
         values.put("subjectId", deadline.getIdSubject());
         values.put("deadlineName", deadline.getDeadlineName());
         values.put("isDone", deadline.isDone() ? 1 : 0);
         values.put("userId", deadline.getUserId());
-        db.insert("Deadline", null, values);
+//        db.insert("Deadline", null, values);
+
+        long insertedId = db.insert("Deadline", null, values);
+        deadline.setId((int) insertedId);
+
+        // Đặt lịch báo thức
+        AlarmUtils.scheduleDeadlineReminder(context, deadline);
     }
 
     @Override
@@ -49,23 +57,6 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         cursor.close();
         return null;
     }
-
-//    List<Deadline> getAllDeadlines(){
-//        List<Deadline> deadlineList = new ArrayList<>();
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        String query = "SELECT * FROM Task";
-//        Cursor cursor = db.rawQuery(query,null);
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Task task = extractTaskFromCursor(cursor);
-//                taskList.add(task);
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return taskList;
-//    }
 
     @Override
     public List<Deadline> getAllDeadlinesByUserId(int userId) {
@@ -81,34 +72,80 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
     @Override
     public void updateDeadline(Deadline deadline) {
         ContentValues values = new ContentValues();
-        values.put("day", dateFormat.format(deadline.getDay()));
-        values.put("timeEnd", dateFormat.format(deadline.getTimeEnd()));
+        values.put("day", (deadline.getDay()));
+        values.put("timeEnd", (deadline.getTimeEnd()));
         values.put("subject", deadline.getSubject());
         values.put("subjectId", deadline.getIdSubject());
         values.put("deadlineName", deadline.getDeadlineName());
         values.put("isDone", deadline.isDone() ? 1 : 0);
         values.put("userId", deadline.getUserId());
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(deadline.getId())});
+
+        AlarmUtils.cancelDeadlineReminder(context, deadline.id);
+        AlarmUtils.scheduleDeadlineReminder(context, deadline);
     }
+
 
     @Override
     public void deleteDeadline(int id) {
+        AlarmUtils.cancelDeadlineReminder(context, id);
         db.delete("Deadline", "id = ?", new String[]{String.valueOf(id)});
     }
 
     @Override
-    public void markDone(int id, boolean done) {
+    public void updateStatus(int id, boolean done) {
         ContentValues values = new ContentValues();
         values.put("isDone", done ? 1 : 0);
         db.update("Deadline", values, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    // Thêm phương thức mới để lấy deadline theo subjectId
+    public List<Deadline> getDeadlinesBySubjectId(int subjectId) {
+        List<Deadline> list = new ArrayList<>();
+        Cursor cursor = db.query("Deadline", null, "subjectId = ?", new String[]{String.valueOf(subjectId)}, null, null, null);
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
+    // Thêm phương thức mới để lọc deadline theo subjectId, ngày, và trạng thái
+    public List<Deadline> getDeadlinesByFilters(int userId, Integer subjectId, String dueDate, Integer status) {
+        List<Deadline> list = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM Deadline WHERE userId = ?");
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(userId));
+
+        if (subjectId != null) {
+            query.append(" AND subjectId = ?");
+            args.add(String.valueOf(subjectId));
+        }
+        if (dueDate != null) {
+            query.append(" AND day <= ?");
+            args.add(dueDate);
+        }
+        if (status != null) {
+            query.append(" AND isDone = ?");
+            args.add(status == 1 ? "1" : "0");
+        }
+
+        Cursor cursor = db.rawQuery(query.toString(), args.toArray(new String[0]));
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
+        }
+        cursor.close();
+        return list;
+    }
+
+
+
     private Deadline extractDeadlineFromCursor(Cursor cursor) {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-        Date day = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("day")));
-        Date timeEnd = parseDate(cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
+        String day = (cursor.getString(cursor.getColumnIndexOrThrow("day")));
+        String timeEnd = (cursor.getString(cursor.getColumnIndexOrThrow("timeEnd")));
         String subject = cursor.getString(cursor.getColumnIndexOrThrow("subject"));
-        String idSubject = cursor.getString(cursor.getColumnIndexOrThrow("subjectId"));
+        int idSubject = cursor.getInt(cursor.getColumnIndexOrThrow("subjectId"));
         String deadlineName = cursor.getString(cursor.getColumnIndexOrThrow("deadlineName"));
         boolean isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone")) == 1;
         int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
@@ -116,11 +153,17 @@ public class SQLiteDeadlineDAO implements DeadlineDAO {
         return new Deadline(id, day, timeEnd, subject, idSubject, deadlineName, isDone, userId);
     }
 
-    private Date parseDate(String str) {
-        try {
-            return dateFormat.parse(str);
-        } catch (Exception e) {
-            return new Date();
+    public List<Deadline> getCompletedDeadlineByUserId(int userId){
+        List<Deadline> list = new ArrayList<>();
+
+        String query = "SELECT * FROM Deadline WHERE isDone = 1 AND userId = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+        while (cursor.moveToNext()) {
+            list.add(extractDeadlineFromCursor(cursor));
         }
+        cursor.close();
+        return list;
     }
+
 }
